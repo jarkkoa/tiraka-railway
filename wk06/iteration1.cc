@@ -21,4 +21,12 @@ void printAllItems(const list<int>& lst)
   */
 
   // ADD YOUR CODE HERE
+
+  auto it = lst.begin();
+
+  while (distance(it, lst.end()) > 0)
+  {
+    cout << *it++ << " ";
+  }
+  cout << endl;
 }

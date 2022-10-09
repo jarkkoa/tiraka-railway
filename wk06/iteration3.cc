@@ -21,4 +21,12 @@ void printHalf(const list<int>& lst)
   */
 
   // ADD YOUR CODE HERE
+
+    auto it = lst.begin();
+
+  while (distance(it, lst.end()) > distance(lst.begin(), lst.end()) / 2)
+  {
+    cout << *it++ << " ";
+  }
+  cout << endl;
 }

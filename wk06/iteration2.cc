@@ -21,4 +21,13 @@ void printEverySecond(const list<int>& lst)
   */
 
   // ADD YOUR CODE HERE
+
+  auto it = lst.begin();
+
+  while (distance(it, lst.end()) > 0)
+  {
+    cout << *it << " ";
+    advance(it, 2);
+  }
+  cout << endl;
 }
