@@ -15,7 +15,7 @@ void eraseEverySecond(std::vector<int>& vec)
     auto beg = vec.begin();
     auto end = vec.end();
 
-    for (auto i = ++beg; i < end; advance(i, 1))
+    for (auto i = ++beg; i < end; i++, end--)
     {
         vec.erase(i);
     }
