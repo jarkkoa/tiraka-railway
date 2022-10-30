@@ -18,7 +18,7 @@ std::vector<int> ascendingVector(int n)
 
     for (int i = 0; i < n; ++i)
     {
-        v.insert(++beg1, i);
+        v.insert(beg1++, i);
     }
 
     return v;
