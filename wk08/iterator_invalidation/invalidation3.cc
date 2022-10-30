@@ -22,14 +22,10 @@ void duplicateEvenRemoveUneven(std::vector<int>& vec) {
         if ( *it % 2 == 0 )
         {
             vec.insert(it, *it);
-            it++;
-            end++;
-
         }
         else
         {
             vec.erase(it);
-            end--;
         }
     }
 }
