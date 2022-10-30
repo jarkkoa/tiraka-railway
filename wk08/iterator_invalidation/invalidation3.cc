@@ -17,7 +17,7 @@ void duplicateEvenRemoveUneven(std::vector<int>& vec) {
     Iter begin = vec.begin();
     Iter end = vec.end();
 
-    for ( Iter it = begin; it < end;)
+    for ( Iter it = begin; it < end; it++)
     {
         if ( *it % 2 == 0 )
         {
