@@ -30,7 +30,6 @@ void duplicateEvenRemoveUneven(std::vector<int>& vec) {
         {
             vec.erase(it);
             end--;
-            it--;
         }
     }
 }
