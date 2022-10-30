@@ -13,13 +13,12 @@ using namespace std;
 std::vector<int> ascendingVector(int n)
 {
     std::vector<int> v;
+    v.reserve(n);
     auto beg1 = v.begin();
-
-    beg1++;
 
     for (int i = 0; i < n; ++i)
     {
-        v.insert(beg1++, i);
+        v.insert(++beg1, i);
     }
 
     return v;
