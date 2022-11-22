@@ -14,6 +14,7 @@
 #include <limits>
 #include <functional>
 #include <exception>
+#include <unordered_map>
 
 // Types for IDs
 using StationID = std::string;
@@ -204,6 +205,17 @@ public:
 
 private:
     // Add stuff needed for your class implementation here
+    struct Station
+    {
+        Name name;
+        Coord xy;
+    };
+
+    using StationMap = std::unordered_map<StationID, Station>;
+
+
+
+    StationMap stations_;
 
 };
 

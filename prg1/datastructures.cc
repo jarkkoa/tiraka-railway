@@ -56,11 +56,20 @@ std::vector<StationID> Datastructures::all_stations()
     throw NotImplemented("all_stations()");
 }
 
-bool Datastructures::add_station(StationID /*id*/, const Name& /*name*/, Coord /*xy*/)
+bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_station()");
+    if (stations_.find(id) != stations_.end())
+    {
+        return false;
+    }
+
+    Station newStation;
+    newStation.name = name;
+    newStation.location = xy;
+
+    stations_.insert(std::pair(id, newStation));
+
+    return true;
 }
 
 Name Datastructures::get_station_name(StationID /*id*/)
