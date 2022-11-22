@@ -14,7 +14,7 @@ using namespace std;
 
 void usage()
 {
-    cout << "Usage: improving_functions <test_function> <test_num> [<num_of_items>]" << endl;
+    cout << "Usage: test_improving <test_function> <test_num> [<num_of_items>]" << endl;
     cout << "  test_function: 1|2|3|4 (number of the function to test as in improve1.cc, improve2.cc, ...)" << endl;
     cout << "  test_num: number of the test performed on the function: 1|2|3. Not all have 3 tests " << endl;
     cout << "   num_of_items: number of items in the test vector (optional, default=100)" << endl;

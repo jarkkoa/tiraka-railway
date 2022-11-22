@@ -14,4 +14,6 @@ build-*/
 .~lock.*
 prg1/prg1
 prg1/docs
+prg2/prg2
+prg2/docs
 a.out
