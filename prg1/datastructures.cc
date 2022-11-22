@@ -44,9 +44,10 @@ unsigned int Datastructures::station_count()
 }
 
 void Datastructures::clear_all()
-{
-    // Replace the line below with your implementation
-    throw NotImplemented("clear_all()");
+{    
+    stations_.clear();
+
+    // TODO clear regions
 }
 
 std::vector<StationID> Datastructures::all_stations()
