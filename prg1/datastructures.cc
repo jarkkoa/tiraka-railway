@@ -77,18 +77,16 @@ bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
     return true;
 }
 
-Name Datastructures::get_station_name(StationID /*id*/)
+Name Datastructures::get_station_name(StationID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("get_station_name()");
+    // O(1) (worst case linear)
+    return stations_.at(id).name;
 }
 
-Coord Datastructures::get_station_coordinates(StationID /*id*/)
+Coord Datastructures::get_station_coordinates(StationID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("get_station_coordinates()");
+    // O(1) (worst case linear)
+    return stations_.at(id).location;
 }
 
 std::vector<StationID> Datastructures::stations_alphabetically()
