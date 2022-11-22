@@ -40,8 +40,7 @@ Datastructures::~Datastructures()
 
 unsigned int Datastructures::station_count()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("station_count()");
+    return stations_.size();
 }
 
 void Datastructures::clear_all()
