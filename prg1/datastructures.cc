@@ -51,8 +51,14 @@ void Datastructures::clear_all()
 
 std::vector<StationID> Datastructures::all_stations()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("all_stations()");
+    std::vector<StationID> allStations;
+
+    for (auto it = stations_.begin(); it != stations_.end(); ++it)
+    {
+        allStations.push_back(it->first);
+    }
+
+    return allStations;
 }
 
 bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
