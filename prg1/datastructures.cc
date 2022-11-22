@@ -92,8 +92,23 @@ Coord Datastructures::get_station_coordinates(StationID id)
 
 std::vector<StationID> Datastructures::stations_alphabetically()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("stations_alphabetically()");
+    std::vector<std::pair<StationID, Name>> stations;
+    std::vector<StationID> idOnly;
+
+    for (auto it = stations_.begin(); it != stations_.end(); ++it)
+    {
+        stations.push_back(std::pair(it->first, it->second.name));
+    }
+
+    std::sort(stations.begin(), stations.end(),
+              [](auto a, auto b) {return a.second > b.second;});
+
+    for (const auto &pair : stations)
+    {
+        idOnly.push_back(pair.second);
+    }
+
+    return idOnly;
 }
 
 std::vector<StationID> Datastructures::stations_distance_increasing()

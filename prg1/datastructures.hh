@@ -208,7 +208,7 @@ private:
     struct Station
     {
         Name name;
-        Coord xy;
+        Coord location;
     };
 
     using StationMap = std::unordered_map<StationID, Station>;
