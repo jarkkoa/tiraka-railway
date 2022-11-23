@@ -280,11 +280,17 @@ std::vector<RegionID> Datastructures::all_regions()
     return allRegions;
 }
 
-Name Datastructures::get_region_name(RegionID /*id*/)
+Name Datastructures::get_region_name(RegionID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("get_region_name()");
+    auto regionIt = regions_.find(id);
+    if (regionIt == regions_.end())
+    {
+        return NO_NAME;
+    }
+    else
+    {
+        return regionIt->second.name;
+    }
 }
 
 std::vector<Coord> Datastructures::get_region_coords(RegionID /*id*/)
