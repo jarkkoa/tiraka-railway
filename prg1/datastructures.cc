@@ -251,11 +251,21 @@ std::vector<std::pair<Time, TrainID>> Datastructures::station_departures_after(S
     return departures;
 }
 
-bool Datastructures::add_region(RegionID /*id*/, const Name &/*name*/, std::vector<Coord> /*coords*/)
+bool Datastructures::add_region(RegionID id, const Name &name, std::vector<Coord> coords)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_region()");
+    auto regionIt = regions_.find(id);
+    if (regionIt != regions_.end()) // If found, don't do anything
+    {
+        return false;
+    }
+
+    Region newRegion;
+
+    newRegion.name = name;
+    newRegion.vertices = coords;
+
+    regions_.insert(std::make_pair(id, newRegion));
+    return true;
 }
 
 std::vector<RegionID> Datastructures::all_regions()
