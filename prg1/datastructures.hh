@@ -233,11 +233,6 @@ private:
     double euclideanDistance(Coord xy);
     double euclideanDistance2(Coord xy1, Coord xy2);
 
-    /**
-     * @brief findStation Finds the station with the given station ID.
-     * @param id Station ID.
-     * @return Pointer to the station, nullptr if the station is not found.
-     */
     Station* findStation(StationID id); // avg: O(1), worst O(N) unordered_map::find()
 
     void getParents(RegionID child, std::vector<RegionID> &parents);
