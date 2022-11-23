@@ -15,6 +15,7 @@
 #include <functional>
 #include <exception>
 #include <unordered_map>
+#include <cmath>
 
 // Types for IDs
 using StationID = std::string;
@@ -210,6 +211,8 @@ private:
         Name name;
         Coord location;
     };
+
+    double euclideanDistance(Coord xy);
 
     using StationMap = std::unordered_map<StationID, Station>;
 

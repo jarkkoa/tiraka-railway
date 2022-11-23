@@ -105,7 +105,7 @@ std::vector<StationID> Datastructures::stations_alphabetically()
 
     for (const auto &pair : stations)
     {
-        idOnly.push_back(pair.second);
+        idOnly.push_back(pair.first);
     }
 
     return idOnly;
@@ -113,8 +113,24 @@ std::vector<StationID> Datastructures::stations_alphabetically()
 
 std::vector<StationID> Datastructures::stations_distance_increasing()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("stations_distance_increasing()");
+
+    std::vector<std::pair<StationID, Coord>> stations;
+    std::vector<StationID> idOnly;
+
+    for (auto it = stations_.begin(); it != stations_.end(); ++it)
+    {
+        stations.push_back(std::pair(it->first, it->second.location));
+    }
+
+    std::sort(stations.begin(), stations.end(),
+              [this](auto a, auto b) {return euclideanDistance(a.second) > euclideanDistance(b.second);});
+
+    for (const auto &pair : stations)
+    {
+        idOnly.push_back(pair.first);
+    }
+
+    return idOnly;
 }
 
 StationID Datastructures::find_station_with_coord(Coord /*xy*/)
@@ -226,4 +242,9 @@ RegionID Datastructures::common_parent_of_regions(RegionID /*id1*/, RegionID /*i
     // Replace the line below with your implementation
     // Also uncomment parameters ( /* param */ -> param )
     throw NotImplemented("common_parent_of_regions()");
+}
+
+double Datastructures::euclideanDistance(Coord xy)
+{
+    return std::sqrt(xy.x*xy.x + xy.y*xy.y);
 }
