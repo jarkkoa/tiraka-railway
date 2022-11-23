@@ -22,7 +22,7 @@ void printReverse(const list<int>& lst)
 
   // ADD YOUR CODE HERE
 
-    auto it = lst.rbegin();
+  auto it = lst.rbegin();
 
   while (distance(it, lst.rend()) > 0)
   {

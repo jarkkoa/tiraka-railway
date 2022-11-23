@@ -46,8 +46,7 @@ unsigned int Datastructures::station_count()
 void Datastructures::clear_all()
 {    
     stations_.clear();
-
-    // TODO clear regions
+    regions_.clear();
 }
 
 std::vector<StationID> Datastructures::all_stations()
