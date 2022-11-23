@@ -69,6 +69,7 @@ void Datastructures::clear_all()
 std::vector<StationID> Datastructures::all_stations()
 {
     std::vector<StationID> allStations;
+    allStations.reserve(stations_.size());
 
     for (auto it = stations_.begin(); it != stations_.end(); ++it)
     {
@@ -145,6 +146,9 @@ std::vector<StationID> Datastructures::stations_alphabetically()
     std::vector<std::pair<StationID, Name>> stations;
     std::vector<StationID> idOnly;
 
+    stations.reserve(stations_.size());
+    idOnly.reserve(stations_.size());
+
     for (auto it = stations_.begin(); it != stations_.end(); ++it)
     {
         stations.push_back(std::make_pair(it->first, it->second.name));
@@ -170,6 +174,9 @@ std::vector<StationID> Datastructures::stations_distance_increasing()
 
     std::vector<std::pair<StationID, Coord>> stations;
     std::vector<StationID> idOnly;
+
+    stations.reserve(stations_.size());
+    idOnly.reserve(stations_.size());
 
     for (auto it = stations_.begin(); it != stations_.end(); ++it)
     {
