@@ -17,7 +17,7 @@
 #include <unordered_map>
 #include <map>
 #include <set>
-#include <list>
+#include <unordered_set>
 #include <cmath>
 #include <stdexcept>
 
@@ -222,8 +222,8 @@ private:
     {
         Name name;
         std::vector<Coord> vertices;
-        std::list<StationID> stations;
-        std::list<RegionID> subregions;
+        std::unordered_set<StationID> stations;
+        std::unordered_set<RegionID> subregions;
     };
 
     double euclideanDistance(Coord xy);

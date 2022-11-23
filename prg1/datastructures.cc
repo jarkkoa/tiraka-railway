@@ -308,18 +308,32 @@ std::vector<Coord> Datastructures::get_region_coords(RegionID id)
     }
 }
 
-bool Datastructures::add_subregion_to_region(RegionID /*id*/, RegionID /*parentid*/)
+bool Datastructures::add_subregion_to_region(RegionID id, RegionID parentid)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_subregion_to_region()");
+    auto regionIt = regions_.find(id);
+    auto parentRegionIt = regions_.find(parentid);
+
+    if (regionIt == regions_.end() || parentRegionIt == regions_.end())
+    {
+        return false;
+    }
+
+    // .second = bool: insert happened
+    return parentRegionIt->second.subregions.insert(id).second;
 }
 
-bool Datastructures::add_station_to_region(StationID /*id*/, RegionID /*parentid*/)
-{
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_station_to_region()");
+bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
+{    
+    auto stationIt = stations_.find(id);
+    auto parentRegionIt = regions_.find(parentid);
+
+    if (stationIt == stations_.end() || parentRegionIt == regions_.end())
+    {
+        return false;
+    }
+
+    // .second = bool: insert happened
+    return parentRegionIt->second.stations.insert(id).second;
 }
 
 std::vector<RegionID> Datastructures::station_in_regions(StationID /*id*/)
