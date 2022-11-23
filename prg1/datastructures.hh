@@ -106,63 +106,63 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(1)
+    // Short rationale for estimate: Unordered map size() time complexity
     unsigned int station_count();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Two consequtive linear operations
     void clear_all();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: The heaviest operation is a linear iteration through all map elements
     std::vector<StationID> all_stations();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(1) Worst-case: O(N)
+    // Short rationale for estimate: Average and worst-case complexities of unordered_map find() and insert().
     bool add_station(StationID id, Name const& name, Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(1) Worst-case: O(N)
+    // Short rationale for estimate: Average and worst-case complexity of unordered_map find().
     Name get_station_name(StationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(1) Worst-case: O(N)
+    // Short rationale for estimate: Average and worst-case complexity of unordered_map find().
     Coord get_station_coordinates(StationID id);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N*log(N))
+    // Short rationale for estimate: Time complexity of the heaviest operation, std::sort()
     std::vector<StationID> stations_alphabetically();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N*log(N))
+    // Short rationale for estimate: Time complexity of the heaviest operation, std::sort()
     std::vector<StationID> stations_distance_increasing();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Time complexity of find_if()
     StationID find_station_with_coord(Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(1), Worst-case: O(N)
+    // Short rationale for estimate: Time complexity of unordered_map::find()
     bool change_station_coord(StationID id, Coord newcoord);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(log(N)), Worst-case: O(N)
+    // Short rationale for estimate: Average: map::at() logarithmic, worst-case: map::insert() linear
     bool add_departure(StationID stationid, TrainID trainid, Time time);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(log(N)), worst-case: O(N)
+    // Short rationale for estimate: Average: map::at() logarithmic, worst-case: map::erase() & map::find() linear
     bool remove_departure(StationID stationid, TrainID trainid, Time time);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N^2)
+    // Short rationale for estimate: Iterating through departure times and trains departing at those times
     std::vector<std::pair<Time, TrainID>> station_departures_after(StationID stationid, Time time);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
+    // Estimate of performance: Average: O(1), worst-case: O(N)
     // Short rationale for estimate:
     bool add_region(RegionID id, Name const& name, std::vector<Coord> coords);
 
