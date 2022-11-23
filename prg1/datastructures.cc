@@ -183,14 +183,14 @@ bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time ti
         return false;
     }
 
-    auto station = stationIt->second;
+    auto station = &stationIt->second;
 
     // Add a departure time if it doesn't exist
     std::set<TrainID> departingTrains;
-    station.departures.insert(std::make_pair(time, departingTrains));
+    station->departures.insert(std::make_pair(time, departingTrains));
 
     // .second = bool: insert happened
-    return station.departures.at(time).insert(trainid).second;
+    return station->departures.at(time).insert(trainid).second;
 }
 
 bool Datastructures::remove_departure(StationID /*stationid*/, TrainID /*trainid*/, Time /*time*/)
