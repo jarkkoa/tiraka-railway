@@ -161,11 +161,17 @@ StationID Datastructures::find_station_with_coord(Coord xy)
     return NO_STATION;
 }
 
-bool Datastructures::change_station_coord(StationID /*id*/, Coord /*newcoord*/)
+bool Datastructures::change_station_coord(StationID id, Coord newcoord)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("change_station_coord()");
+    auto stationIt = stations_.find(id);
+
+    if (stationIt == stations_.end())
+    {
+        return false;
+    }
+
+    stationIt->second.location = newcoord;
+    return true;
 }
 
 bool Datastructures::add_departure(StationID /*stationid*/, TrainID /*trainid*/, Time /*time*/)
