@@ -211,19 +211,21 @@ public:
 private:
     // Add stuff needed for your class implementation here
 
-    struct Station
-    {
-        Name name;
-        Coord location;
-        std::map<Time, std::set<TrainID>> departures;
-    };
-
     struct Region
     {
         Name name;
         std::vector<Coord> vertices;
         std::unordered_set<StationID> stations;
         std::unordered_set<RegionID> subregions;
+        RegionID parentRegion;
+    };
+
+    struct Station
+    {
+        Name name;
+        Coord location;
+        RegionID region;
+        std::map<Time, std::set<TrainID>> departures;
     };
 
     double euclideanDistance(Coord xy);

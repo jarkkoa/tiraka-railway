@@ -71,6 +71,7 @@ bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
     Station newStation;
     newStation.name = name;
     newStation.location = xy;
+    newStation.region = NO_REGION;
 
     stations_.insert(std::make_pair(id, newStation));
 
@@ -263,6 +264,7 @@ bool Datastructures::add_region(RegionID id, const Name &name, std::vector<Coord
 
     newRegion.name = name;
     newRegion.vertices = coords;
+    newRegion.parentRegion = NO_REGION;
 
     regions_.insert(std::make_pair(id, newRegion));
     return true;
@@ -313,27 +315,29 @@ bool Datastructures::add_subregion_to_region(RegionID id, RegionID parentid)
     auto regionIt = regions_.find(id);
     auto parentRegionIt = regions_.find(parentid);
 
-    if (regionIt == regions_.end() || parentRegionIt == regions_.end())
+    if (regionIt == regions_.end() || parentRegionIt == regions_.end()
+            || regionIt->second.parentRegion != NO_REGION)
     {
         return false;
     }
 
-    // .second = bool: insert happened
-    return parentRegionIt->second.subregions.insert(id).second;
+    regionIt->second.parentRegion = parentid;
+    return true;
 }
 
 bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
-{    
+{
     auto stationIt = stations_.find(id);
     auto parentRegionIt = regions_.find(parentid);
 
-    if (stationIt == stations_.end() || parentRegionIt == regions_.end())
+    if (stationIt == stations_.end() || parentRegionIt == regions_.end()
+            || stationIt->second.region != NO_REGION)
     {
         return false;
     }
 
-    // .second = bool: insert happened
-    return parentRegionIt->second.stations.insert(id).second;
+    stationIt->second.region = parentid;
+    return true;
 }
 
 std::vector<RegionID> Datastructures::station_in_regions(StationID /*id*/)
