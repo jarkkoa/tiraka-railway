@@ -229,6 +229,7 @@ private:
     };
 
     double euclideanDistance(Coord xy);
+    double euclideanDistance2(Coord xy1, Coord xy2);
 
     /**
      * @brief findStation Finds the station with the given station ID.

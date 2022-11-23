@@ -373,11 +373,30 @@ std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID id)
     return subregions;
 }
 
-std::vector<StationID> Datastructures::stations_closest_to(Coord /*xy*/)
+std::vector<StationID> Datastructures::stations_closest_to(Coord xy)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("stations_closest_to()");
+    std::vector<std::pair<StationID, Coord>> stations;
+    std::vector<StationID> finalStations;
+
+    for (const auto &station : stations_)
+    {
+        stations.push_back(std::make_pair(station.first, station.second.location));
+    }
+
+    std::sort(stations.begin(), stations.end(),
+              [this, xy](auto a, auto b)
+              {
+                  return euclideanDistance2(a.second.location, xy) < euclideanDistance2(b.second.location, xy);
+              });
+
+    stations.erase(stations.begin()+3, stations.end());
+
+    for (const auto &pair : stations)
+    {
+        finalStations.push_back(pair.first);
+    }
+
+    return finalStations;
 }
 
 bool Datastructures::remove_station(StationID /*id*/)
@@ -397,6 +416,11 @@ RegionID Datastructures::common_parent_of_regions(RegionID /*id1*/, RegionID /*i
 double Datastructures::euclideanDistance(Coord xy)
 {
     return std::sqrt(xy.x*xy.x + xy.y*xy.y);
+}
+
+double Datastructures::euclideanDistance2(Coord xy1, Coord xy2)
+{
+    return std::sqrt((xy1.x-xy2.x)*(xy1.x-xy2.x) + (xy1.y-xy2.y)*(xy1.y-xy2.y));
 }
 
 Datastructures::Station* Datastructures::findStation(StationID id)
