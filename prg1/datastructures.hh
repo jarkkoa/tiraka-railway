@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <map>
 #include <set>
+#include <list>
 #include <cmath>
 #include <stdexcept>
 
@@ -217,7 +218,13 @@ private:
         std::map<Time, std::set<TrainID>> departures;
     };
 
-    using StationMap = std::unordered_map<StationID, Station>;
+    struct Region
+    {
+        Name name;
+        std::vector<Coord> vertices;
+        std::list<StationID> stations;
+        std::list<RegionID> subregions;
+    };
 
     double euclideanDistance(Coord xy);
 
@@ -228,7 +235,8 @@ private:
      */
     Station* findStation(StationID id);
 
-    StationMap stations_;
+    std::unordered_map<StationID, Station> stations_;
+    std::unordered_map<RegionID, Region> regions_;
 
 };
 
