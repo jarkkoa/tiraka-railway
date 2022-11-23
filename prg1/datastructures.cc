@@ -218,11 +218,38 @@ bool Datastructures::remove_departure(StationID stationid, TrainID trainid, Time
     return true; // Removal successful
 }
 
-std::vector<std::pair<Time, TrainID>> Datastructures::station_departures_after(StationID /*stationid*/, Time /*time*/)
+std::vector<std::pair<Time, TrainID>> Datastructures::station_departures_after(StationID stationid, Time time)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("station_departures_after()");
+    Station* station = findStation(stationid);
+    std::vector<std::pair<Time, TrainID>> departures;
+
+    if (station == nullptr)
+    {
+        departures.push_back(std::make_pair(NO_TIME, NO_TRAIN));
+        return departures;
+    }
+
+    // Find the position of the first eligible time
+    auto depIt = station->departures.begin();
+    while (depIt != station->departures.end())
+    {
+        if (depIt->first >= time)
+        {
+            break;
+        }
+        depIt++;
+    }
+
+    // Return all departures later than 'time'
+    for (auto it = depIt; it != station->departures.end(); ++it)
+    {
+        for (const auto &train : it->second)
+        {
+            departures.push_back(std::make_pair(it->first, train));
+        }
+    }
+
+    return departures;
 }
 
 bool Datastructures::add_region(RegionID /*id*/, const Name &/*name*/, std::vector<Coord> /*coords*/)
