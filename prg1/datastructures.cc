@@ -293,11 +293,19 @@ Name Datastructures::get_region_name(RegionID id)
     }
 }
 
-std::vector<Coord> Datastructures::get_region_coords(RegionID /*id*/)
+std::vector<Coord> Datastructures::get_region_coords(RegionID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("get_region_coords()");
+    std::vector<Coord> vertices;
+    auto regionIt = regions_.find(id);
+    if (regionIt == regions_.end())
+    {
+        vertices.push_back(NO_COORD);
+        return vertices;
+    }
+    else
+    {
+        return regionIt->second.vertices;
+    }
 }
 
 bool Datastructures::add_subregion_to_region(RegionID /*id*/, RegionID /*parentid*/)
