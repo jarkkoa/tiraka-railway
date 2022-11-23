@@ -270,8 +270,14 @@ bool Datastructures::add_region(RegionID id, const Name &name, std::vector<Coord
 
 std::vector<RegionID> Datastructures::all_regions()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("all_regions()");
+    std::vector<RegionID> allRegions;
+
+    for (const auto &region : regions_)
+    {
+        allRegions.push_back(region.first);
+    }
+
+    return allRegions;
 }
 
 Name Datastructures::get_region_name(RegionID /*id*/)
