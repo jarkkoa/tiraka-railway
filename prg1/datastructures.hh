@@ -159,8 +159,8 @@ public:
     // Short rationale for estimate: Average: map::at() logarithmic, worst-case: map::erase() & map::find() linear
     bool remove_departure(StationID stationid, TrainID trainid, Time time);
 
-    // Estimate of performance: O(N^2)
-    // Short rationale for estimate: Iterating through departure times and trains departing at those times
+    // Estimate of performance: Average: O(N), worst-caseO(N^2)
+    // Short rationale for estimate: Iterating through departure times and trains departing at those times, perftest seems to scale linearly
     std::vector<std::pair<Time, TrainID>> station_departures_after(StationID stationid, Time time);
 
     // We recommend you implement the operations below only after implementing the ones above
@@ -207,8 +207,8 @@ public:
     // Short rationale for estimate: unordered_map::find(), unordered_map::erase()
     bool remove_station(StationID id);
 
-    // Estimate of performance: O(N^2)
-    // Short rationale for estimate: At most N1 * N2 comparisons (std::find_first_of)
+    // Estimate of performance: Average: O(N), worst-case: O(N^2)
+    // Short rationale for estimate: At most N1 * N2 comparisons (std::find_first_of), perftest seems to scale linearly
     RegionID common_parent_of_regions(RegionID id1, RegionID id2);
 
 private:
