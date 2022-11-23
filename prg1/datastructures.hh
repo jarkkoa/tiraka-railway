@@ -15,7 +15,10 @@
 #include <functional>
 #include <exception>
 #include <unordered_map>
+#include <map>
+#include <set>
 #include <cmath>
+#include <stdexcept>
 
 // Types for IDs
 using StationID = std::string;
@@ -206,10 +209,12 @@ public:
 
 private:
     // Add stuff needed for your class implementation here
+
     struct Station
     {
         Name name;
         Coord location;
+        std::map<Time, std::set<TrainID>> departures;
     };
 
     double euclideanDistance(Coord xy);

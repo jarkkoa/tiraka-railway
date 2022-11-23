@@ -73,7 +73,7 @@ bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
     newStation.name = name;
     newStation.location = xy;
 
-    stations_.insert(std::pair(id, newStation));
+    stations_.insert(std::make_pair(id, newStation));
 
     return true;
 }
@@ -109,7 +109,7 @@ std::vector<StationID> Datastructures::stations_alphabetically()
 
     for (auto it = stations_.begin(); it != stations_.end(); ++it)
     {
-        stations.push_back(std::pair(it->first, it->second.name));
+        stations.push_back(std::make_pair(it->first, it->second.name));
     }
 
     std::sort(stations.begin(), stations.end(),
@@ -131,7 +131,7 @@ std::vector<StationID> Datastructures::stations_distance_increasing()
 
     for (auto it = stations_.begin(); it != stations_.end(); ++it)
     {
-        stations.push_back(std::pair(it->first, it->second.location));
+        stations.push_back(std::make_pair(it->first, it->second.location));
     }
 
     std::sort(stations.begin(), stations.end(),
@@ -174,11 +174,25 @@ bool Datastructures::change_station_coord(StationID id, Coord newcoord)
     return true;
 }
 
-bool Datastructures::add_departure(StationID /*stationid*/, TrainID /*trainid*/, Time /*time*/)
+bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_departure()");
+    Station station;
+
+    try
+    {
+        station = stations_.at(stationid);
+    }
+    catch (std::out_of_range) // Station not found
+    {
+        return false;
+    }
+
+    // Add a departure time if it doesn't exist
+    std::set<TrainID> departingTrains;
+    station.departures.insert(std::make_pair(time, departingTrains));
+
+    // .second = bool: insert happened
+    return station.departures.at(time).insert(trainid).second;
 }
 
 bool Datastructures::remove_departure(StationID /*stationid*/, TrainID /*trainid*/, Time /*time*/)
