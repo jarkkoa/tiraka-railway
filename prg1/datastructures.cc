@@ -239,7 +239,7 @@ bool Datastructures::change_station_coord(StationID id, Coord newcoord)
  * @param stationid Station ID
  * @param trainid ID of the departing train
  * @param time Time of departure
- * @return
+ * @return Was the addition successful?
  */
 bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
 {   
@@ -457,7 +457,7 @@ bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
 /**
  * @brief Datastructures::station_in_regions Finds every region that the given station belongs to, directly or indirectly
  * @param id Station ID
- * @return
+ * @return A vector containing the parent regions of the station
  */
 std::vector<RegionID> Datastructures::station_in_regions(StationID id)
 {
