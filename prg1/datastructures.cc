@@ -141,7 +141,12 @@ StationID Datastructures::find_station_with_coord(Coord xy)
                                       return pair.second.location == xy;
                                   });
 
-    return stationIt->first; // StationID
+    if (stationIt != stations_.end())
+    {
+        return stationIt->first; // StationID
+    }
+
+    return NO_STATION;
 }
 
 bool Datastructures::change_station_coord(StationID /*id*/, Coord /*newcoord*/)
