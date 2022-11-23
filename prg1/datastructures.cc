@@ -386,7 +386,7 @@ std::vector<StationID> Datastructures::stations_closest_to(Coord xy)
     std::sort(stations.begin(), stations.end(),
               [this, xy](auto a, auto b)
               {
-                  return euclideanDistance2(a.second.location, xy) < euclideanDistance2(b.second.location, xy);
+                  return euclideanDistance2(a.second, xy) < euclideanDistance2(b.second, xy);
               });
 
     stations.erase(stations.begin()+3, stations.end());
@@ -409,13 +409,38 @@ bool Datastructures::remove_station(StationID id)
     }
 
     stations_.erase(stationIt);
+    return true;
 }
 
-RegionID Datastructures::common_parent_of_regions(RegionID /*id1*/, RegionID /*id2*/)
+RegionID Datastructures::common_parent_of_regions(RegionID id1, RegionID id2)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("common_parent_of_regions()");
+    if (regions_.find(id1) == regions_.end() ||
+            regions_.find(id2) == regions_.end())
+    {
+        return NO_REGION;
+    }
+
+    std::vector<RegionID> region1Parents, region2Parents, commonParents;
+
+    // Get the parents of both regions
+    getParents(id1, region1Parents);
+    getParents(id2, region2Parents);
+
+    qDebug() << region1Parents << region2Parents;
+
+    // Find the first common element
+    auto firstCommonIt = std::find_first_of(region1Parents.begin(),
+                                            region1Parents.end(),
+                                            region2Parents.begin(),
+                                            region2Parents.end());
+
+    if (firstCommonIt == region1Parents.end())
+    {
+        // No common element found
+        return NO_REGION;
+    }
+
+    return *firstCommonIt;
 }
 
 double Datastructures::euclideanDistance(Coord xy)

@@ -21,6 +21,8 @@
 #include <list>
 #include <cmath>
 #include <stdexcept>
+#include <algorithm>
+#include <QDebug>
 
 // Types for IDs
 using StationID = std::string;
