@@ -399,11 +399,16 @@ std::vector<StationID> Datastructures::stations_closest_to(Coord xy)
     return finalStations;
 }
 
-bool Datastructures::remove_station(StationID /*id*/)
+bool Datastructures::remove_station(StationID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("remove_station()");
+    auto stationIt = stations_.find(id);
+
+    if (stationIt == stations_.end())
+    {
+        return false;
+    }
+
+    stations_.erase(stationIt);
 }
 
 RegionID Datastructures::common_parent_of_regions(RegionID /*id1*/, RegionID /*id2*/)
