@@ -113,7 +113,7 @@ std::vector<StationID> Datastructures::stations_alphabetically()
     }
 
     std::sort(stations.begin(), stations.end(),
-              [](auto a, auto b) {return a.second > b.second;});
+              [](auto a, auto b) {return a.second < b.second;});
 
     for (const auto &pair : stations)
     {
@@ -135,7 +135,7 @@ std::vector<StationID> Datastructures::stations_distance_increasing()
     }
 
     std::sort(stations.begin(), stations.end(),
-              [this](auto a, auto b) {return euclideanDistance(a.second) > euclideanDistance(b.second);});
+              [this](auto a, auto b) {return euclideanDistance(a.second) < euclideanDistance(b.second);});
 
     for (const auto &pair : stations)
     {
@@ -342,10 +342,6 @@ bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
 
 std::vector<RegionID> Datastructures::station_in_regions(StationID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("station_in_regions()");
-
     std::vector<RegionID> parents;
     Station* station = findStation(id);
 
