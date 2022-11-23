@@ -199,16 +199,16 @@ public:
     // Short rationale for estimate: Recursive unordered_map::find() calls
     std::vector<RegionID> all_subregions_of_region(RegionID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N*log(N))
+    // Short rationale for estimate: std::sort()
     std::vector<StationID> stations_closest_to(Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: unordered_map::find(), unordered_map::erase()
     bool remove_station(StationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N^2)
+    // Short rationale for estimate: At most N1 * N2 comparisons (std::find_first_of)
     RegionID common_parent_of_regions(RegionID id1, RegionID id2);
 
 private:
