@@ -175,17 +175,15 @@ bool Datastructures::change_station_coord(StationID id, Coord newcoord)
 }
 
 bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
-{
-    Station station;
+{   
+    auto stationIt = stations_.find(stationid);
 
-    try
-    {
-        station = stations_.at(stationid);
-    }
-    catch (std::out_of_range) // Station not found
+    if (stationIt == stations_.end())
     {
         return false;
     }
+
+    auto station = stationIt->second;
 
     // Add a departure time if it doesn't exist
     std::set<TrainID> departingTrains;
