@@ -340,11 +340,25 @@ bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
     return true;
 }
 
-std::vector<RegionID> Datastructures::station_in_regions(StationID /*id*/)
+std::vector<RegionID> Datastructures::station_in_regions(StationID id)
 {
     // Replace the line below with your implementation
     // Also uncomment parameters ( /* param */ -> param )
     throw NotImplemented("station_in_regions()");
+
+    std::vector<RegionID> parents;
+    Station* station = findStation(id);
+
+    if (station == nullptr)
+    {
+        parents.push_back(NO_REGION);
+        return parents;
+    }
+
+    parents.push_back(station->region);
+    getParents(station->region, parents);
+
+    return parents;
 }
 
 std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID /*id*/)
@@ -390,6 +404,20 @@ Datastructures::Station* Datastructures::findStation(StationID id)
     }
 
     return &stationIt->second;
+}
+
+void Datastructures::getParents(RegionID child, std::vector<RegionID> &parents)
+{
+    auto childIt = regions_.find(child);
+    if (childIt == regions_.end() || childIt->second.parentRegion == NO_REGION)
+    {
+        return;
+    }
+
+    RegionID parent = childIt->second.parentRegion;
+
+    parents.push_back(parent);
+    getParents(parent, parents);
 }
 
 

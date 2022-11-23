@@ -215,8 +215,6 @@ private:
     {
         Name name;
         std::vector<Coord> vertices;
-        std::unordered_set<StationID> stations;
-        std::unordered_set<RegionID> subregions;
         RegionID parentRegion;
     };
 
@@ -236,6 +234,8 @@ private:
      * @return Pointer to the station, nullptr if the station is not found.
      */
     Station* findStation(StationID id);
+
+    void getParents(RegionID child, std::vector<RegionID> &parents);
 
     std::unordered_map<StationID, Station> stations_;
     std::unordered_map<RegionID, Region> regions_;
