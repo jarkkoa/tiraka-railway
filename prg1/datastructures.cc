@@ -80,14 +80,26 @@ bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
 
 Name Datastructures::get_station_name(StationID id)
 {
-    // O(1) (worst case linear)
-    return stations_.at(id).name;
+    auto stationIt = stations_.find(id);
+
+    if (stationIt != stations_.end())
+    {
+        return stationIt->second.name;
+    }
+
+    return NO_NAME;
 }
 
 Coord Datastructures::get_station_coordinates(StationID id)
 {
-    // O(1) (worst case linear)
-    return stations_.at(id).location;
+    auto stationIt = stations_.find(id);
+
+    if (stationIt != stations_.end())
+    {
+        return stationIt->second.location;
+    }
+
+    return NO_COORD;
 }
 
 std::vector<StationID> Datastructures::stations_alphabetically()
