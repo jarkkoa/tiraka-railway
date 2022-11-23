@@ -322,6 +322,7 @@ bool Datastructures::add_subregion_to_region(RegionID id, RegionID parentid)
     }
 
     regionIt->second.parentRegion = parentid;
+    parentRegionIt->second.subregions.push_back(id);
     return true;
 }
 
@@ -357,11 +358,19 @@ std::vector<RegionID> Datastructures::station_in_regions(StationID id)
     return parents;
 }
 
-std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID /*id*/)
+std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("all_subregions_of_region()");
+    std::vector<RegionID> subregions;
+
+    auto regionIt = regions_.find(id);
+    if (regionIt == regions_.end() || regionIt->second.vertices.empty())
+    {
+        subregions.push_back(NO_REGION);
+        return subregions;
+    }
+
+    getChildren(id, subregions); // Saves children directly in the 'subregions' vector
+    return subregions;
 }
 
 std::vector<StationID> Datastructures::stations_closest_to(Coord /*xy*/)
@@ -414,6 +423,21 @@ void Datastructures::getParents(RegionID child, std::vector<RegionID> &parents)
 
     parents.push_back(parent);
     getParents(parent, parents);
+}
+
+void Datastructures::getChildren(RegionID parent, std::vector<RegionID> &children)
+{
+    auto parentIt = regions_.find(parent);
+    if (parentIt == regions_.end() || parentIt->second.subregions.empty())
+    {
+        return;
+    }
+
+    for (const auto &childRegion : parentIt->second.subregions)
+    {
+        children.push_back(childRegion);
+        getChildren(childRegion, children);
+    }
 }
 
 

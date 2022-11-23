@@ -18,6 +18,7 @@
 #include <map>
 #include <set>
 #include <unordered_set>
+#include <list>
 #include <cmath>
 #include <stdexcept>
 
@@ -163,37 +164,37 @@ public:
     // We recommend you implement the operations below only after implementing the ones above
 
     // Estimate of performance: Average: O(1), worst-case: O(N)
-    // Short rationale for estimate:
+    // Short rationale for estimate: Average and worst-case time complexities of unordered_map::find() and ::insert()
     bool add_region(RegionID id, Name const& name, std::vector<Coord> coords);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Iterating through an unordered map
     std::vector<RegionID> all_regions();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: unordered_map::find()
     Name get_region_name(RegionID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: unordered_map::find()
     std::vector<Coord> get_region_coords(RegionID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: unordered_map::find()
     bool add_subregion_to_region(RegionID id, RegionID parentid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: unordered_map::find()
     bool add_station_to_region(StationID id, RegionID parentid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average O(1), worst: O(N)
+    // Short rationale for estimate: Recursive function getParents() calls unordered_map::find() and vector::push_back()
     std::vector<RegionID> station_in_regions(StationID id);
 
     // Non-compulsory operations
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Average: O(1), worst O(N^2)
+    // Short rationale for estimate: Recursive unordered_map::find() calls
     std::vector<RegionID> all_subregions_of_region(RegionID id);
 
     // Estimate of performance:
@@ -216,6 +217,7 @@ private:
         Name name;
         std::vector<Coord> vertices;
         RegionID parentRegion;
+        std::list<RegionID> subregions;
     };
 
     struct Station
@@ -233,9 +235,10 @@ private:
      * @param id Station ID.
      * @return Pointer to the station, nullptr if the station is not found.
      */
-    Station* findStation(StationID id);
+    Station* findStation(StationID id); // avg: O(1), worst O(N) unordered_map::find()
 
     void getParents(RegionID child, std::vector<RegionID> &parents);
+    void getChildren(RegionID parent, std::vector<RegionID> &children);
 
     std::unordered_map<StationID, Station> stations_;
     std::unordered_map<RegionID, Region> regions_;
