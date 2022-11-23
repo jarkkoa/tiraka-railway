@@ -217,11 +217,16 @@ private:
         std::map<Time, std::set<TrainID>> departures;
     };
 
-    double euclideanDistance(Coord xy);
-
     using StationMap = std::unordered_map<StationID, Station>;
 
+    double euclideanDistance(Coord xy);
 
+    /**
+     * @brief findStation Finds the station with the given station ID.
+     * @param id Station ID.
+     * @return Pointer to the station, nullptr if the station is not found.
+     */
+    Station* findStation(StationID id);
 
     StationMap stations_;
 

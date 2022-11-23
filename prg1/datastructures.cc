@@ -176,14 +176,12 @@ bool Datastructures::change_station_coord(StationID id, Coord newcoord)
 
 bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
 {   
-    auto stationIt = stations_.find(stationid);
+    Station* station = findStation(stationid);
 
-    if (stationIt == stations_.end())
+    if (station == nullptr)
     {
         return false;
     }
-
-    auto station = &stationIt->second;
 
     // Add a departure time if it doesn't exist
     std::set<TrainID> departingTrains;
@@ -193,11 +191,31 @@ bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time ti
     return station->departures.at(time).insert(trainid).second;
 }
 
-bool Datastructures::remove_departure(StationID /*stationid*/, TrainID /*trainid*/, Time /*time*/)
+bool Datastructures::remove_departure(StationID stationid, TrainID trainid, Time time)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("remove_departure()");
+    Station* station = findStation(stationid);
+
+    if (station == nullptr)
+    {
+        return false; // Station not found
+    }
+
+    auto departureIt = station->departures.find(time);
+
+    if (departureIt == station->departures.end())
+    {
+        return false; // Departure time not found
+    }
+
+    auto trainIt = station->departures.at(time).find(trainid);
+
+    if (trainIt == station->departures.at(time).end())
+    {
+        return false; // Train not found
+    }
+
+    station->departures.at(time).erase(trainid);
+    return true; // Removal successful
 }
 
 std::vector<std::pair<Time, TrainID>> Datastructures::station_departures_after(StationID /*stationid*/, Time /*time*/)
@@ -287,3 +305,17 @@ double Datastructures::euclideanDistance(Coord xy)
 {
     return std::sqrt(xy.x*xy.x + xy.y*xy.y);
 }
+
+Datastructures::Station* Datastructures::findStation(StationID id)
+{
+    auto stationIt = stations_.find(id);
+
+    if (stationIt == stations_.end())
+    {
+        return nullptr;
+    }
+
+    return &stationIt->second;
+}
+
+
