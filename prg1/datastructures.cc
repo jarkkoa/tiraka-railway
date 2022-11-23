@@ -133,11 +133,15 @@ std::vector<StationID> Datastructures::stations_distance_increasing()
     return idOnly;
 }
 
-StationID Datastructures::find_station_with_coord(Coord /*xy*/)
+StationID Datastructures::find_station_with_coord(Coord xy)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("find_station_with_coord()");
+    auto stationIt = std::find_if(stations_.begin(), stations_.end(),
+                                  [xy](std::pair<StationID, Station> pair)
+                                  {
+                                      return pair.second.location == xy;
+                                  });
+
+    return stationIt->first; // StationID
 }
 
 bool Datastructures::change_station_coord(StationID /*id*/, Coord /*newcoord*/)
