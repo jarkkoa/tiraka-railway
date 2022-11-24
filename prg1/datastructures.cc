@@ -503,28 +503,80 @@ std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID id)
  */
 std::vector<StationID> Datastructures::stations_closest_to(Coord xy)
 {
-    std::vector<std::pair<StationID, Coord>> stations;
-    std::vector<StationID> finalStations;
+    std::vector<StationID> closeStations;
+    auto stationIt = stations_.begin();
+    closeStations.reserve(3);
 
-    for (const auto &station : stations_)
+    // For small station counts, simpy sort them by the distance
+    if (stations_.size() <= 3)
     {
-        stations.push_back(std::make_pair(station.first, station.second.location));
+        std::vector<std::pair<StationID, Coord>> allStations;
+
+        for (const auto &station : stations_)
+        {
+            allStations.push_back(std::make_pair(station.first, station.second.location));
+        }
+
+        std::sort(allStations.begin(), allStations.end(),
+                  [this, xy](auto a, auto b)
+                  {
+                      return euclideanDistance2(a.second, xy) < euclideanDistance2(b.second, xy);
+                  });
+
+        for (const auto &station : allStations)
+        {
+            closeStations.push_back(station.first);
+        }
+        return closeStations;
     }
 
-    std::sort(stations.begin(), stations.end(),
-              [this, xy](auto a, auto b)
-              {
-                  return euclideanDistance2(a.second, xy) < euclideanDistance2(b.second, xy);
-              });
 
-    stations.erase(stations.begin()+3, stations.end());
+    /* For larger amount of stations, iterate through the list and keep track of
+     * the top 3 closest stations */
 
-    for (const auto &pair : stations)
+    double current;
+
+    // Pick initial values
+    closeStations.push_back(NO_STATION);
+    closeStations.push_back(NO_STATION);
+    closeStations.push_back(NO_STATION);
+
+    // Keep track of the distances to reduce the need for recalculation
+    double first, second, third;
+    first = second = third = __DBL_MAX__;
+
+    while (stationIt != stations_.end())
     {
-        finalStations.push_back(pair.first);
+        current = euclideanDistance2(stationIt->second.location, xy);
+
+        if (current <= third)
+        {
+            third = current;
+            closeStations.at(2) = stationIt->first;
+        }
+
+        if (current <= second)
+        {
+            third = second;
+            second = current;
+
+            closeStations.at(2) = closeStations.at(1);
+            closeStations.at(1) = stationIt->first;
+        }
+
+        if (current <= first)
+        {
+            second = first;
+            first = current;
+
+            closeStations.at(1) = closeStations.at(0);
+            closeStations.at(0) = stationIt->first;
+        }
+
+        stationIt++;
     }
 
-    return finalStations;
+    return closeStations;
 }
 
 /**
