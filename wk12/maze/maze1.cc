@@ -32,5 +32,6 @@ Node* createNode  (std::pair<int, int> loc, std::map<std::string, Node*> paths) 
     newNode->location = loc;
     newNode->neighbors = paths;
 
+    maze.push_back(newNode);
     return newNode;
 }
