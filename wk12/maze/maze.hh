@@ -27,6 +27,8 @@ struct Node
     std::map<std::string, Node*> neighbors;
 };
 
+static std::vector<Node*> maze;
+
 // STUDENT TODO: Implement these functions in maze1.cc, maze2.cc, maze3.cc, and maze4.cc
 Node *createNode(std::pair<int, int> loc, std::map<std::string, Node*> paths);
 

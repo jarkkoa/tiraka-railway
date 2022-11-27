@@ -9,8 +9,6 @@ using namespace std;
 // Remember to implement your own container here or in another cc file to store the nodes in the maze
 // If you define it elsewhere, remember to make sure it's accessible by this file as well.
 
-std::vector<Node*> maze;
-
 /**
  * @brief Create a Node object
  * 
