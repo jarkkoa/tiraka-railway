@@ -16,7 +16,8 @@ using namespace std;
  * @return Node*  The new node that the player is on after the move
  */
 Node *getNeighbour(std::string direction, Node &currentNode) {
-    std::cout << "getNeighbour not implemented" << std::endl;
-    // Student code here to get the node in the direction specified
-    return nullptr;
+
+    Node* neighbor = currentNode.neighbors.at(direction);
+
+    return neighbor;
 }
