@@ -9,6 +9,8 @@ using namespace std;
 // Remember to implement your own container here or in another cc file to store the nodes in the maze
 // If you define it elsewhere, remember to make sure it's accessible by this file as well.
 
+std::vector<Node*> maze;
+
 /**
  * @brief Create a Node object
  * 
@@ -17,16 +19,11 @@ using namespace std;
  */
 Node* createNode  (std::pair<int, int> loc, std::map<std::string, Node*> paths) {
 
-
-    // Is the new node already a neighboring node's neighbor? (= already created)
-    for (const auto &node : paths)
+    for (const auto &node : maze)
     {
-        for (const auto &neighbor : node.second->neighbors)
+        if (node->location == loc)
         {
-            if (neighbor.second->location == loc)
-            {
-                return neighbor.second;
-            }
+            return node;
         }
     }
 
