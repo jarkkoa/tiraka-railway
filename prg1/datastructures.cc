@@ -1,8 +1,8 @@
 // Datastructures.cc
 //
-// Student name: Jarkko Ahvenniemi
-// Student email: jarkko.ahvenniemi@tuni.fi
-// Student number: H292105
+// Student name:
+// Student email:
+// Student number:
 
 #include "datastructures.hh"
 
@@ -28,687 +28,562 @@ Type random_in_range(Type start, Type end)
 // an operation (Commenting out parameter name prevents compiler from
 // warning about unused parameters on operations you haven't yet implemented.)
 
-/**
- * @brief Datastructures::Datastructures Datastructures constructor
- */
 Datastructures::Datastructures()
 {
     // Write any initialization you need here
 }
 
-/**
- * @brief Datastructures::~Datastructures Datastructures destructor
- */
 Datastructures::~Datastructures()
 {
     // Write any cleanup you need here
 }
 
-/**
- * @brief Datastructures::station_count Returns the total station count
- * @return Total station count
+/*!
+ * \brief Datastructures::station_count counts the amount of staions.
+ * \return a count of stations.
  */
+
+
 unsigned int Datastructures::station_count()
 {
-    return stations_.size();
+    return _stations.size();
 }
 
-/**
- * @brief Datastructures::clear_all Clears the data structures
+/*!
+ * \brief Datastructures::clear_all removes all the data stored in the application.
  */
+
 void Datastructures::clear_all()
-{    
-    stations_.clear();
-    regions_.clear();
+{
+    _stations.clear();
+    _stationNames.clear();
+    _stationCoordinates.clear();
+    _regions.clear();
+    _regionNames.clear();
 }
 
-/**
- * @brief Datastructures::all_stations Creates a list of every existing station
- * @return A vector containing the stations
+/*!
+ * \brief Datastructures::all_stations gets all the stations.
+ * \return vector of all the available station ids.
  */
+
 std::vector<StationID> Datastructures::all_stations()
 {
-    std::vector<StationID> allStations;
-    allStations.reserve(stations_.size());
-
-    for (auto it = stations_.begin(); it != stations_.end(); ++it)
-    {
-        allStations.push_back(it->first);
+    std::vector<std::string> stationIDs;
+    for (auto const& element : _stations) {
+      stationIDs.push_back(element.first);
     }
-
-    return allStations;
+    return stationIDs;
 }
 
-/**
- * @brief Datastructures::add_station Creates a new station
- * @param id Station ID
- * @param name Station name
- * @param xy Station coordinates
- * @return Was the addition successful?
+/*!
+ * \brief Datastructures::add_station adds station to the application
+ * \param id of the station
+ * \param name of the station
+ * \param xy coordinate for the station
+ * \return boolean if the creation was succesfull.
  */
+
 bool Datastructures::add_station(StationID id, const Name& name, Coord xy)
 {
-    if (stations_.find(id) != stations_.end())
-    {
+    if (_stations.find(id) != _stations.end()) {
         return false;
+    } else {
+        std::pair<Name, StationID> stationNameID(name, id);
+        std::vector<std::pair<Time, TrainID>> departures;
+        RegionID regionid = 0;
+
+        _stationNames.insert(stationNameID);
+        _stationCoordinates.insert({xy, id});
+
+        _stations.insert({id, Station {id, name, xy, regionid, departures}});
+        return true;
     }
-
-    Station newStation;
-    newStation.name = name;
-    newStation.location = xy;
-    newStation.region = NO_REGION;
-
-    stations_.insert(std::make_pair(id, newStation));
-
-    return true;
 }
 
-/**
- * @brief Datastructures::get_station_name Gets the name of a given station
- * @param id Station ID
- * @return Station name
+/*!
+ * \brief Datastructures::get_station_name gets the name of one station
+ * \param id of the station
+ * \return name of the station
  */
+
 Name Datastructures::get_station_name(StationID id)
 {
-    auto stationIt = stations_.find(id);
-
-    if (stationIt != stations_.end())
-    {
-        return stationIt->second.name;
+    auto it = _stations.find(id);
+    if (it == _stations.end()) {
+        return NO_NAME;
+    } else {
+        Name name = it->second.name;
+        return name;
     }
-
-    return NO_NAME;
 }
 
-/**
- * @brief Datastructures::get_station_coordinates Gets the coordinates of a given station
- * @param id Station ID
- * @return Station coordinates
+/*!
+ * \brief Datastructures::get_station_coordinates gets the coordinates of one station
+ * \param id of the station
+ * \return coordinates of the station
  */
+
 Coord Datastructures::get_station_coordinates(StationID id)
 {
-    auto stationIt = stations_.find(id);
-
-    if (stationIt != stations_.end())
-    {
-        return stationIt->second.location;
+    auto it = _stations.find(id);
+    if (it == _stations.end()) {
+        return NO_COORD;
+    } else {
+        Coord coordinates = it->second.location;
+        return coordinates;
     }
-
-    return NO_COORD;
 }
 
-/**
- * @brief Datastructures::stations_alphabetically Sorts the existing stations by name
- * @return Sorted vector containing the stations
+/*!
+ * \brief Datastructures::stations_alphabetically gives all stations in the application alphabetically ordered
+ * \return vector of station ids
  */
+
 std::vector<StationID> Datastructures::stations_alphabetically()
 {
-    std::vector<std::pair<StationID, Name>> stations;
-    std::vector<StationID> idOnly;
-
-    stations.reserve(stations_.size());
-    idOnly.reserve(stations_.size());
-
-    for (auto it = stations_.begin(); it != stations_.end(); ++it)
-    {
-        stations.push_back(std::make_pair(it->first, it->second.name));
+    std::vector<StationID> stations;
+    for (auto itr : _stationNames) {
+        stations.push_back(itr.second);
     }
-
-    std::sort(stations.begin(), stations.end(),
-              [](auto a, auto b) {return a.second < b.second;});
-
-    for (const auto &pair : stations)
-    {
-        idOnly.push_back(pair.first);
-    }
-
-    return idOnly;
+    return stations;
 }
 
-/**
- * @brief Datastructures::stations_distance_increasing Sorts the existing stations by their coordinates
- * @return Sorted vector containing the stations
+/*!
+ * \brief Datastructures::stations_distance_increasing gives all the stations in the application ordered by their distance from origo
+ * \return vector of station ids.
  */
+
 std::vector<StationID> Datastructures::stations_distance_increasing()
 {
-
-    std::vector<std::pair<StationID, Coord>> stations;
-    std::vector<StationID> idOnly;
-
-    stations.reserve(stations_.size());
-    idOnly.reserve(stations_.size());
-
-    for (auto it = stations_.begin(); it != stations_.end(); ++it)
-    {
-        stations.push_back(std::make_pair(it->first, it->second.location));
+    std::vector<StationID> stations;
+    for (auto itr : _stationCoordinates) {
+        stations.push_back(itr.second);
     }
-
-    std::sort(stations.begin(), stations.end(),
-              [this](auto a, auto b) {return euclideanDistance(a.second) < euclideanDistance(b.second);});
-
-    for (const auto &pair : stations)
-    {
-        idOnly.push_back(pair.first);
-    }
-
-    return idOnly;
+    return stations;
 }
 
-/**
- * @brief Datastructures::find_station_with_coord Searches the coordinates for a station
- * @param xy Search coordinates
- * @return Search result. If not found, NO_STATION is returned.
+/*!
+ * \brief Datastructures::find_station_with_coord finds a station with given coordinate.
+ * \param xy coordinate of the station
+ * \return id of the station.
  */
+
 StationID Datastructures::find_station_with_coord(Coord xy)
 {
-    auto stationIt = std::find_if(stations_.begin(), stations_.end(),
-                                  [xy](std::pair<StationID, Station> pair)
-                                  {
-                                      return pair.second.location == xy;
-                                  });
-
-    if (stationIt != stations_.end())
-    {
-        return stationIt->first; // StationID
+    auto itr = _stationCoordinates.find(xy);
+    if (itr == _stationCoordinates.end()) {
+        return NO_STATION;
     }
-
-    return NO_STATION;
+    StationID station = itr->second;
+    return station;
 }
 
-/**
- * @brief Datastructures::change_station_coord Changes the coordinates of a given station
- * @param id Station ID
- * @param newcoord New coordinates
- * @return Was the change successful?
+/*!
+ * \brief Datastructures::change_station_coord changes a coordinate of given station.
+ * \param id of the station
+ * \param newcoord is the new coordinate of the station
+ * \return boolean if the change was succesfull.
  */
+
 bool Datastructures::change_station_coord(StationID id, Coord newcoord)
 {
-    auto stationIt = stations_.find(id);
-
-    if (stationIt == stations_.end())
-    {
+    auto itr = _stations.find(id);
+    if (itr == _stations.end()) {
         return false;
     }
 
-    stationIt->second.location = newcoord;
+    Coord oldcoord = itr->second.location;
+
+    itr->second.location = newcoord;
+
+    _stationCoordinates.erase(_stationCoordinates.find(oldcoord)->first);
+    _stationCoordinates.insert({newcoord, id});
+
     return true;
 }
 
-/**
- * @brief Datastructures::add_departure Creates a new departure
- * @param stationid Station ID
- * @param trainid ID of the departing train
- * @param time Time of departure
- * @return Was the addition successful?
+/*!
+ * \brief Datastructures::add_departure add one train departure to one station
+ * \param stationid station id where the departure belongs
+ * \param trainid which train the departure concerns
+ * \param time which time the departure is
+ * \return boolean if the adding was successfull
  */
-bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
-{   
-    Station* station = findStation(stationid);
 
-    if (station == nullptr)
-    {
+bool Datastructures::add_departure(StationID stationid, TrainID trainid, Time time)
+{
+    auto itr = _stations.find(stationid);
+    std::pair<Time, TrainID> newDeparture = std::make_pair(time, trainid);
+    if (itr == _stations.end() || find(itr->second.departures.begin(), itr->second.departures.end(), newDeparture) != itr->second.departures.end() ) {
         return false;
     }
 
-    // Add a departure time if it doesn't exist
-    std::set<TrainID> departingTrains;
-    station->departures.insert(std::make_pair(time, departingTrains));
-
-    // .second = bool: insert happened
-    return station->departures.at(time).insert(trainid).second;
+    itr->second.departures.push_back(std::make_pair(time, trainid));
+    return true;
 }
 
-/**
- * @brief Datastructures::remove_departure Removes a departure
- * @param stationid Departure Station ID
- * @param trainid ID of the departing train
- * @param time Time of departure
- * @return Was the removal successful?
+/*!
+ * \brief Datastructures::remove_departure remove one departure
+ * \param stationid identifier of the station
+ * \param trainid identifier of the train
+ * \param time the time when the departure is scheduled
+ * \return boolean if the removal was successfull or not.
  */
+
 bool Datastructures::remove_departure(StationID stationid, TrainID trainid, Time time)
 {
-    Station* station = findStation(stationid);
+    auto itr = _stations.find(stationid);
+    std::pair<Time, TrainID> departure = std::make_pair(time, trainid);
 
-    if (station == nullptr)
-    {
-        return false; // Station not found
+    if (itr == _stations.end() || find(itr->second.departures.begin(), itr->second.departures.end(), departure) == itr->second.departures.end() ) {
+        return false;
     }
 
-    auto departureIt = station->departures.find(time);
+    Station& station = itr->second;
 
-    if (departureIt == station->departures.end())
+    for (auto i = station.departures.begin(); i != station.departures.end(); ++i)
     {
-        return false; // Departure time not found
+        if(i->first == time && i->second == trainid) {
+            station.departures.erase(i);
+            return true;
+        }
     }
 
-    auto trainIt = station->departures.at(time).find(trainid);
-
-    if (trainIt == station->departures.at(time).end())
-    {
-        return false; // Train not found
-    }
-
-    station->departures.at(time).erase(trainid);
-    return true; // Removal successful
+    return false;
 }
 
-/**
- * @brief Datastructures::station_departures_after Finds all departures at a given station during or after a given time
- * @param stationid Station ID
- * @param time Departure time
- * @return A vector containing the departures
+/*!
+ * \brief Datastructures::station_departures_after get all departures from certain station after certain time.
+ * \param stationid identifier of the station.
+ * \param time the time when the departure is scheduled.
+ * \return vector of all the time-train pairs who fulfill the requirement.
  */
+
 std::vector<std::pair<Time, TrainID>> Datastructures::station_departures_after(StationID stationid, Time time)
 {
-    Station* station = findStation(stationid);
+    auto itr = _stations.find(stationid);
     std::vector<std::pair<Time, TrainID>> departures;
 
-    if (station == nullptr)
-    {
-        departures.push_back(std::make_pair(NO_TIME, NO_TRAIN));
+    if (itr == _stations.end()) {
+        departures.push_back({NO_TIME, NO_TRAIN});
         return departures;
     }
 
-    // Find the position of the first eligible time
-    auto depIt = station->departures.begin();
-    while (depIt != station->departures.end())
-    {
-        if (depIt->first >= time)
-        {
-            break;
-        }
-        depIt++;
-    }
+    std::vector<std::pair<Time, TrainID>> allDepartures = _stations.find(stationid)->second.departures;
 
-    // Return all departures later than 'time'
-    for (auto it = depIt; it != station->departures.end(); ++it)
+    for (auto i = allDepartures.begin(); i != allDepartures.end(); ++i)
     {
-        for (const auto &train : it->second)
-        {
-            departures.push_back(std::make_pair(it->first, train));
+        if(i->first >= time) {
+            departures.push_back(*i);
         }
     }
 
     return departures;
 }
 
-/**
- * @brief Datastructures::add_region Creates a new region
- * @param id Region ID
- * @param name Region name
- * @param coords Coordinates of the region vertices
- * @return Was the addition successful?
+/*!
+ * \brief Datastructures::add_region add region to the application.
+ * \param id identifier of the region
+ * \param name of the region
+ * \param coords vector of coordinates for the region (identifies the borders of the region).
+ * \return boolean if the addition was succesfull or not.
  */
+
 bool Datastructures::add_region(RegionID id, const Name &name, std::vector<Coord> coords)
 {
-    auto regionIt = regions_.find(id);
-    if (regionIt != regions_.end()) // If found, don't do anything
-    {
+    auto itr = _regions.find(id);
+    if (itr != _regions.end()) {
         return false;
     }
 
-    Region newRegion;
+    std::pair<Name, RegionID> regionNameID(name, id);
+    std::vector<StationID> stations;
+    std::vector<RegionID> subregions;
+    Region* parentregion = nullptr;
 
-    newRegion.name = name;
-    newRegion.vertices = coords;
-    newRegion.parentRegion = NO_REGION;
+    _regions.insert({id, Region {id, name, coords, stations, subregions, parentregion}});
+    _regionNames.insert(regionNameID);
 
-    regions_.insert(std::make_pair(id, newRegion));
     return true;
 }
 
-/**
- * @brief Datastructures::all_regions Compiles a vector of all existing regions
- * @return A vector containing every existing region
+/*!
+ * \brief Datastructures::all_regions gives all the regions stored in the application.
+ * \return vector of all the region ids.
  */
+
 std::vector<RegionID> Datastructures::all_regions()
 {
-    std::vector<RegionID> allRegions;
-
-    for (const auto &region : regions_)
-    {
-        allRegions.push_back(region.first);
+    std::vector<RegionID> regionIDs;
+    for(auto it = _regions.begin(); it != _regions.end(); ++it) {
+        regionIDs.push_back(it->first);
     }
-
-    return allRegions;
+    return regionIDs;
 }
 
-/**
- * @brief Datastructures::get_region_name Gets the name of a given region
- * @param id Region ID
- * @return Name of the region
+/*!
+ * \brief Datastructures::get_region_name gives a name of certain region.
+ * \param id identifier of the region
+ * \return name of the region
  */
+
 Name Datastructures::get_region_name(RegionID id)
 {
-    auto regionIt = regions_.find(id);
-    if (regionIt == regions_.end())
-    {
+    auto itr = _regions.find(id);
+    if (itr == _regions.end()) {
         return NO_NAME;
     }
-    else
-    {
-        return regionIt->second.name;
-    }
+
+    Name name = itr->second.name;
+    return name;
 }
 
-/**
- * @brief Datastructures::get_region_coords Gets the vertex coordinates of a given region.
- * @param id Region ID
- * @return Vector containing the vertices
+/*!
+ * \brief Datastructures::get_region_coords gets coordinates of certain region
+ * \param id identifier of the region
+ * \return vector of coordinates
  */
+
 std::vector<Coord> Datastructures::get_region_coords(RegionID id)
 {
-    std::vector<Coord> vertices;
-    auto regionIt = regions_.find(id);
-    if (regionIt == regions_.end())
-    {
-        vertices.push_back(NO_COORD);
-        return vertices;
+    std::vector<Coord> coords;
+
+    auto itr = _regions.find(id);
+    if (itr == _regions.end()) {
+        std::vector<Coord> coords{NO_COORD};
+        return coords;
     }
-    else
-    {
-        return regionIt->second.vertices;
-    }
+    return itr->second.coords;
 }
 
-/**
- * @brief Datastructures::add_subregion_to_region Adds one region as the subregion of another region
- * @param id Subregion ID
- * @param parentid Parent region ID
- * @return Was the addition successful?
+/*!
+ * \brief Datastructures::add_subregion_to_region add one region to a subregion for another
+ * \param id identifier of the subregion
+ * \param parentid identifier of the parent region
+ * \return boolean if the addition was succesfull
  */
+
 bool Datastructures::add_subregion_to_region(RegionID id, RegionID parentid)
 {
-    auto regionIt = regions_.find(id);
-    auto parentRegionIt = regions_.find(parentid);
+    auto regionItr = _regions.find(id);
+    auto parentRegionItr = _regions.find(parentid);
 
-    if (regionIt == regions_.end() || parentRegionIt == regions_.end()
-            || regionIt->second.parentRegion != NO_REGION)
-    {
+    if (regionItr == _regions.end() || parentRegionItr == _regions.end() || regionItr->second.parentregion != nullptr) {
         return false;
     }
 
-    regionIt->second.parentRegion = parentid;
-    parentRegionIt->second.subregions.push_back(id);
+    regionItr->second.parentregion = &parentRegionItr->second;
+    parentRegionItr->second.subregions.push_back(id);
     return true;
 }
 
-/**
- * @brief Datastructures::add_station_to_region Adds the given station to the given region.
- * @param id Station ID
- * @param parentid Region ID
- * @return Was the addition successful?
+/*!
+ * \brief Datastructures::add_station_to_region add information that certain station belongs to certain region
+ * \param id identifier of the station
+ * \param parentid identifier of the region
+ * \return boolean if the addiotion was successfull
  */
+
 bool Datastructures::add_station_to_region(StationID id, RegionID parentid)
 {
-    auto stationIt = stations_.find(id);
-    auto parentRegionIt = regions_.find(parentid);
-
-    if (stationIt == stations_.end() || parentRegionIt == regions_.end()
-            || stationIt->second.region != NO_REGION)
-    {
+    auto regionItr = _regions.find(parentid);
+    auto stationItr = _stations.find(id);
+    if (regionItr == _regions.end() || stationItr == _stations.end() || stationItr->second.region != 0) {
         return false;
     }
 
-    stationIt->second.region = parentid;
+    stationItr->second.region = parentid;
+    regionItr->second.stations.push_back(id);
+
     return true;
 }
 
-/**
- * @brief Datastructures::station_in_regions Finds every region that the given station belongs to, directly or indirectly
- * @param id Station ID
- * @return A vector containing the parent regions of the station
+/*!
+ * \brief Datastructures::station_in_regions get all the regions where certain station belongs to
+ * \param id identifier of the station
+ * \return vector of all the region ids
  */
+
 std::vector<RegionID> Datastructures::station_in_regions(StationID id)
 {
-    std::vector<RegionID> parents;
-    Station* station = findStation(id);
+    auto itr = _stations.find(id);
+    std::vector<RegionID> regions;
 
-    if (station == nullptr)
-    {
-        parents.push_back(NO_REGION);
-        return parents;
+    if (itr == _stations.end()) {
+        regions.push_back(NO_REGION);
+        return regions;
     }
 
-    parents.push_back(station->region);
-    getParents(station->region, parents);
+    RegionID regionid = _stations.find(id)->second.region;
 
-    return parents;
+    if (regionid == 0) {
+        return regions;
+    } else {
+        regions.push_back(regionid);
+        Region* regionptr = _regions.find(regionid)->second.parentregion;
+        while (regionptr != nullptr) {
+            regions.push_back(regionptr->id);
+            regionptr = regionptr->parentregion;
+        }
+        return regions;
+    }
 }
 
-/**
- * @brief Datastructures::all_subregions_of_region Finds every subregion belonging to the given region ID
- * @param id Region ID
- * @return Vector containing every subregion
+/*!
+ * \brief Datastructures::get_subregions subregions of certain region (used as recursive function)
+ * \param id identifier of the region
+ * \return vector of the subregion ids
  */
+
+std::vector<RegionID> Datastructures::get_subregions(RegionID id)
+{
+    auto itr = _regions.find(id);
+    std::vector<RegionID> regions;
+
+    if (itr->second.subregions.size() == 0) {
+        return regions;
+    }
+
+    std::vector<RegionID> subregions = _regions.find(id)->second.subregions;
+
+    regions.insert(regions.end(), subregions.begin(), subregions.end());
+    for (auto const& regionid : itr->second.subregions) {
+        std::vector<RegionID> subregions = get_subregions(regionid);
+        regions.insert(regions.end(), subregions.begin(), subregions.end());
+    }
+    return regions;
+}
+
+/*!
+ * \brief Datastructures::all_subregions_of_region get all the subregions of certain region
+ * \param id identifier of the region
+ * \return vector of all the subregion ids
+ */
+
 std::vector<RegionID> Datastructures::all_subregions_of_region(RegionID id)
 {
-    std::vector<RegionID> subregions;
+    auto itr = _regions.find(id);
+    std::vector<RegionID> regions;
 
-    auto regionIt = regions_.find(id);
-    if (regionIt == regions_.end() || regionIt->second.vertices.empty())
-    {
-        subregions.push_back(NO_REGION);
-        return subregions;
+    if (itr == _regions.end()) {
+        regions.push_back(NO_REGION);
+        return regions;
     }
 
-    getChildren(id, subregions); // Saves children directly in the 'subregions' vector
-    return subregions;
+    std::vector<RegionID> subregions = get_subregions(id);
+
+    regions.insert(regions.end(), subregions.begin(), subregions.end());
+
+    return regions;
 }
 
-/**
- * @brief Datastructures::stations_closest_to Finds three stations closest to the given coordinates.
- * @param xy Coordinates
- * @return Vector containing the nearest stations
+/*!
+ * \brief Datastructures::stations_closest_to get station closest to certain coordinate
+ * \param xy coordinate where the distance is measured
+ * \return vector of station ids in ascending order based on the distance to the coordinate
  */
+
 std::vector<StationID> Datastructures::stations_closest_to(Coord xy)
 {
-    std::vector<StationID> closeStations;
-    auto stationIt = stations_.begin();
-    closeStations.reserve(3);
+    std::vector<StationID> stations;
+    std::vector<std::pair<float, TrainID>> distances;
 
-    // For small station counts, simpy sort them by the distance
-    if (stations_.size() <= 3)
-    {
-        std::vector<std::pair<StationID, Coord>> allStations;
-
-        for (const auto &station : stations_)
-        {
-            allStations.push_back(std::make_pair(station.first, station.second.location));
-        }
-
-        std::sort(allStations.begin(), allStations.end(),
-                  [this, xy](auto a, auto b)
-                  {
-                      return euclideanDistance2(a.second, xy) < euclideanDistance2(b.second, xy);
-                  });
-
-        for (const auto &station : allStations)
-        {
-            closeStations.push_back(station.first);
-        }
-        return closeStations;
+    if(_stationCoordinates.size() == 0) {
+        return stations;
     }
 
+    int vectorSize = 0;
 
-    /* For larger amount of stations, iterate through the list and keep track of
-     * the top 3 closest stations */
-
-    double current;
-
-    // Pick initial values
-    closeStations.push_back(NO_STATION);
-    closeStations.push_back(NO_STATION);
-    closeStations.push_back(NO_STATION);
-
-    // Keep track of the distances to reduce the need for recalculation
-    double first, second, third;
-    first = second = third = __DBL_MAX__;
-
-    while (stationIt != stations_.end())
-    {
-        current = euclideanDistance2(stationIt->second.location, xy);
-
-        if (current <= third)
-        {
-            third = current;
-            closeStations.at(2) = stationIt->first;
-        }
-
-        if (current <= second)
-        {
-            third = second;
-            second = current;
-
-            closeStations.at(2) = closeStations.at(1);
-            closeStations.at(1) = stationIt->first;
-        }
-
-        if (current <= first)
-        {
-            second = first;
-            first = current;
-
-            closeStations.at(1) = closeStations.at(0);
-            closeStations.at(0) = stationIt->first;
-        }
-
-        stationIt++;
+    for(auto it = _stationCoordinates.begin(); it != _stationCoordinates.end(); ++it) {
+        float distance = sqrt(pow(xy.x - it->first.x, 2) + pow(xy.y - it->first.y, 2));
+        distances.push_back(make_pair(distance, it->second));
+        ++vectorSize;
     }
 
-    return closeStations;
+    std::sort(distances.begin(), distances.end(),
+              [] (const auto &x, const auto &y) { return x.first < y.first; });
+
+    std::transform(distances.begin(), distances.end(), std::back_inserter(stations), [](auto const& pair) -> auto const& { return pair.second; });
+
+    if (vectorSize > 3) {
+        stations.resize(3);
+    }
+
+    return stations;
 }
 
-/**
- * @brief Datastructures::remove_station Removes a single station with the given ID
- * @param id Station ID
- * @return Boolean value which states whether the removal was successful.
+/*!
+ * \brief Datastructures::remove_station remove certain station from the application
+ * \param id identifier of the station
+ * \return boolean indicating if the removal was successfull
  */
+
 bool Datastructures::remove_station(StationID id)
 {
-    auto stationIt = stations_.find(id);
-
-    if (stationIt == stations_.end())
-    {
+    auto itr = _stations.find(id);
+    if (itr == _stations.end()) {
         return false;
     }
 
-    stations_.erase(stationIt);
+    RegionID regionid = itr->second.region;
+
+    if (regionid != 0) {
+        std::vector<StationID>& regionstations = _regions.find(regionid)->second.stations;
+        for (auto i = regionstations.begin(); i != regionstations.end(); ++i) {
+            if (*i == id) {
+                regionstations.erase(i);
+                break;
+            }
+        }
+    }
+
+    for (auto i = _stationCoordinates.begin(); i != _stationCoordinates.end(); ++i) {
+        if (i->second == id) {
+            _stationCoordinates.erase(i);
+            break;
+        }
+    }
+
+    for (auto i = _stationNames.begin(); i != _stationNames.end(); ++i) {
+        if (i->second == id) {
+            _stationNames.erase(i);
+            break;
+        }
+    }
+
+    _stations.erase(itr);
     return true;
 }
 
-/**
- * @brief Datastructures::common_parent_of_regions Finds the nearest common parent region of two regions
- * @param id1 Region 1 ID
- * @param id2 Region 2 ID
- * @return ID of the parent region. Returns NO_REGION if neither a common parent or any of the argument regions are not found.
+/*!
+ * \brief Datastructures::common_parent_of_regions finds the closest parent between to regions
+ * \param id1 identifier of the first region
+ * \param id2 identifier of the second region
+ * \return id of the common parent region
  */
+
 RegionID Datastructures::common_parent_of_regions(RegionID id1, RegionID id2)
 {
-    if (regions_.find(id1) == regions_.end() ||
-            regions_.find(id2) == regions_.end())
-    {
+    auto itr1 = _regions.find(id1);
+    auto itr2 = _regions.find(id2);
+    if (itr1 == _regions.end() || itr2 == _regions.end()) {
         return NO_REGION;
     }
 
-    std::vector<RegionID> region1Parents, region2Parents, commonParents;
+    Region* regionptr1 = itr1->second.parentregion;
+    Region* regionptr2 = itr2->second.parentregion;
 
-    // Get the parents of both regions
-    getParents(id1, region1Parents);
-    getParents(id2, region2Parents);
-
-    qDebug() << region1Parents << region2Parents;
-
-    // Find the first common element
-    auto firstCommonIt = std::find_first_of(region1Parents.begin(),
-                                            region1Parents.end(),
-                                            region2Parents.begin(),
-                                            region2Parents.end());
-
-    if (firstCommonIt == region1Parents.end())
-    {
-        // No common element found
-        return NO_REGION;
+    while (regionptr1 != nullptr) {
+        while (regionptr2 != nullptr) {
+            if (regionptr1 == regionptr2) {
+                return regionptr1->id;
+            }
+            regionptr2 = regionptr2->parentregion;
+        }
+        regionptr1 = regionptr1->parentregion;
+        regionptr2 = itr2->second.parentregion;
     }
 
-    return *firstCommonIt;
+    return NO_REGION;
 }
-
-/**
- * @brief Datastructures::euclideanDistance Calculates the "normalized" euclidean distance of a single coordinate point.
- * @param xy Coordinates
- * @return Distance
- */
-double Datastructures::euclideanDistance(Coord xy)
-{
-    return std::sqrt(xy.x*xy.x + xy.y*xy.y);
-}
-
-/**
- * @brief Datastructures::euclideanDistance2 Calculates the euclidean distance between 2 coordinates
- * @param xy1 Coordinate 1
- * @param xy2 Coordinate 2
- * @return Distance between the coordinates
- */
-double Datastructures::euclideanDistance2(Coord xy1, Coord xy2)
-{
-    return std::sqrt((xy1.x-xy2.x)*(xy1.x-xy2.x) + (xy1.y-xy2.y)*(xy1.y-xy2.y));
-}
-
-/**
- * @brief Datastructures::findStation Finds the station with the given station ID.
- * @param id Station ID.
- * @return Pointer to the station, nullptr if the station is not found.
- */
-Datastructures::Station* Datastructures::findStation(StationID id)
-{
-    auto stationIt = stations_.find(id);
-
-    if (stationIt == stations_.end())
-    {
-        return nullptr;
-    }
-
-    return &stationIt->second;
-}
-
-/**
- * @brief Datastructures::getParents Finds every parent of 'child' and adds them to the 'parents' vector
- * @param child Child region
- * @param parents Vector containing every parent region of 'child'
- */
-void Datastructures::getParents(RegionID child, std::vector<RegionID> &parents)
-{
-    auto childIt = regions_.find(child);
-    if (childIt == regions_.end() || childIt->second.parentRegion == NO_REGION)
-    {
-        return;
-    }
-
-    RegionID parent = childIt->second.parentRegion;
-
-    parents.push_back(parent);
-    getParents(parent, parents);
-}
-
-/**
- * @brief Datastructures::getChildren Finds every subregion belonging to 'parent'
- * @param parent The parent region
- * @param children Vector containing every subregion
- */
-void Datastructures::getChildren(RegionID parent, std::vector<RegionID> &children)
-{
-    auto parentIt = regions_.find(parent);
-    if (parentIt == regions_.end() || parentIt->second.subregions.empty())
-    {
-        return;
-    }
-
-    for (const auto &childRegion : parentIt->second.subregions)
-    {
-        children.push_back(childRegion);
-        getChildren(childRegion, children);
-    }
-}
-
-

@@ -1,28 +1,23 @@
 // Datastructures.hh
 //
-// Student name: Jarkko Ahvenniemi
-// Student email: jarkko.ahvenniemi@tuni.fi
-// Student number: H292105
+// Student name:
+// Student email:
+// Student number:
 
 #ifndef DATASTRUCTURES_HH
 #define DATASTRUCTURES_HH
 
 #include <string>
+#include <map>
+#include <unordered_set>
 #include <vector>
 #include <tuple>
 #include <utility>
 #include <limits>
 #include <functional>
 #include <exception>
-#include <unordered_map>
-#include <map>
 #include <set>
-#include <unordered_set>
-#include <list>
-#include <cmath>
-#include <stdexcept>
-#include <algorithm>
-#include <QDebug>
+#include <utility>
 
 // Types for IDs
 using StationID = std::string;
@@ -47,6 +42,25 @@ struct Coord
 {
     int x = NO_VALUE;
     int y = NO_VALUE;
+};
+
+struct Station
+{
+    StationID id;
+    Name name;
+    Coord location;
+    RegionID region;
+    std::vector<std::pair<Time, TrainID>> departures;
+};
+
+struct Region
+{
+    RegionID id;
+    Name name;
+    std::vector<Coord> coords;
+    std::vector<StationID> stations;
+    std::vector<RegionID> subregions;
+    Region* parentregion;
 };
 
 // Example: Defining == and hash function for Coord so that it can be used
@@ -110,137 +124,119 @@ public:
     ~Datastructures();
 
     // Estimate of performance: O(1)
-    // Short rationale for estimate: Unordered map size() time complexity
+    // Short rationale for estimate: function call "size" is constant.
     unsigned int station_count();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: Two consequtive linear operations
+    // Short rationale for estimate: function calls "clear" are linear.
     void clear_all();
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: The heaviest operation is a linear iteration through all map elements
+    // Short rationale for estimate: Looping all elements in vector.
     std::vector<StationID> all_stations();
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average and worst-case complexities of unordered_map find() and insert().
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Finding value with key in map and inserting value in map (both operations O(log n)).
     bool add_station(StationID id, Name const& name, Coord xy);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average and worst-case complexity of unordered_map find().
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding value from map with key which has performance O(log n).
     Name get_station_name(StationID id);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average and worst-case complexity of unordered_map find().
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding value from map with key which has performance O(log n).
     Coord get_station_coordinates(StationID id);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: O(n*log(n))
-    // Short rationale for estimate: Time complexity of the heaviest operation, std::sort()
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Looping all elements in set.
     std::vector<StationID> stations_alphabetically();
 
-    // Estimate of performance: O(n*log(n))
-    // Short rationale for estimate: Time complexity of the heaviest operation, std::sort()
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Looping all elements in set.
     std::vector<StationID> stations_distance_increasing();
 
-    // Estimate of performance: O(n)
-    // Short rationale for estimate: Time complexity of find_if()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding value with key value in map.
     StationID find_station_with_coord(Coord xy);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Time complexity of unordered_map::find()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Finding value with key value in map which has O(log n) and changing the value which is O(1)
     bool change_station_coord(StationID id, Coord newcoord);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average: map::at() logarithmic, worst-case: map::insert() linear
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Finding value from vector requires looping through the whole vector.
     bool add_departure(StationID stationid, TrainID trainid, Time time);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average: map::at() logarithmic, worst-case: map::erase() & map::find() linear
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Looping through a vector.
     bool remove_departure(StationID stationid, TrainID trainid, Time time);
 
-    // Estimate of performance: Worst-case: O(n^2)
-    // Short rationale for estimate: Iterating through departure times and trains departing at those times, perftest seems to scale linearly
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Looping through a vector.
     std::vector<std::pair<Time, TrainID>> station_departures_after(StationID stationid, Time time);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Average and worst-case time complexities of unordered_map::find() and ::insert()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Inserting element to a map.
     bool add_region(RegionID id, Name const& name, std::vector<Coord> coords);
 
     // Estimate of performance: O(n)
-    // Short rationale for estimate: Iterating through an unordered map
+    // Short rationale for estimate: Looping through a map.
     std::vector<RegionID> all_regions();
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Time complexity of unordered_map::find()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding a value in a map with key.
     Name get_region_name(RegionID id);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Time complexity of unordered_map::find()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding a value in a map with key.
     std::vector<Coord> get_region_coords(RegionID id);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Time complexity of unordered_map::find()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding a value in a map with key.
     bool add_subregion_to_region(RegionID id, RegionID parentid);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Time complexity of unordered_map::find()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding a value in a map with key.
     bool add_station_to_region(StationID id, RegionID parentid);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: Recursive function getParents() calls unordered_map::find() and vector::push_back()
+    // Estimate of performance: O(log n)
+    // Short rationale for estimate: Most time expensive operation is finding a value in a map with key.
     std::vector<RegionID> station_in_regions(StationID id);
 
     // Non-compulsory operations
 
-    // Estimate of performance: Worst-case: O(n^2)
-    // Short rationale for estimate: Recursive unordered_map::find() calls
+    // Estimate of performance: O(n^2)
+    // Short rationale for estimate: Worst case is that every region n is parent region for one other region.
+    // Then the recursive function is executed n times with most expensive operation of vector.insert() which has also O(n).
     std::vector<RegionID> all_subregions_of_region(RegionID id);
 
-    // Estimate of performance: O(n*log(n))
-    // Short rationale for estimate: Time complexity of std::sort()
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Most time expensive operation is looping through a map.
     std::vector<StationID> stations_closest_to(Coord xy);
 
-    // Estimate of performance: Worst-case: O(n)
-    // Short rationale for estimate: unordered_map::find(), unordered_map::erase()
+    // Estimate of performance: O(n log n)
+    // Short rationale for estimate: We loop through a vector of n where we call vector.erase -function for each element which also has time complexity of O(n).
     bool remove_station(StationID id);
 
-    // Estimate of performance: Worst-case: O(n^2)
-    // Short rationale for estimate: At most N1 * N2 comparisons (std::find_first_of), perftest seems to scale linearly
+    // Estimate of performance: O(n^2)
+    // Short rationale for estimate: There are two nested while loops which both have worst possible time consumption of O(n).
     RegionID common_parent_of_regions(RegionID id1, RegionID id2);
 
 private:
     // Add stuff needed for your class implementation here
 
-    struct Region
-    {
-        Name name;
-        std::vector<Coord> vertices;
-        RegionID parentRegion;
-        std::list<RegionID> subregions;
-    };
+    std::map<StationID, Station> _stations;
+    std::map<RegionID, Region> _regions;
 
-    struct Station
-    {
-        Name name;
-        Coord location;
-        RegionID region;
-        std::map<Time, std::set<TrainID>> departures;
-    };
+    std::set<std::pair<Name, StationID>> _stationNames;
+    std::map<Coord, StationID> _stationCoordinates;
+    std::set<std::pair<Name, RegionID>> _regionNames;
 
-    double euclideanDistance(Coord xy);
-    double euclideanDistance2(Coord xy1, Coord xy2);
-
-    Station* findStation(StationID id); // avg: O(1), worst O(N) unordered_map::find()
-
-    void getParents(RegionID child, std::vector<RegionID> &parents);
-    void getChildren(RegionID parent, std::vector<RegionID> &children);
-
-    std::unordered_map<StationID, Station> stations_;
-    std::unordered_map<RegionID, Region> regions_;
-
+    std::vector<RegionID> get_subregions(RegionID id);
 };
 
 #endif // DATASTRUCTURES_HH
