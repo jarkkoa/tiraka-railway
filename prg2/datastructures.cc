@@ -726,7 +726,12 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
     }
 
     Train newTrain;
-    newTrain.route = stationtimes;
+
+    for (const auto &departure : stationtimes)
+    {
+        newTrain.route.insert(departure);
+    }
+
     auto stationIt = stations_.begin();
     std::map<Time, std::set<TrainID>>* departures;
     const Time* currentDepartureTime;
@@ -761,6 +766,8 @@ std::vector<StationID> Datastructures::next_stations_from(StationID /*id*/)
     // Replace the line below with your implementation
     // Also uncomment parameters ( /* param */ -> param )
     throw NotImplemented("next_stations_from()");
+
+    // Compile a vector of previous and next stations of every train in departures
 }
 
 std::vector<StationID> Datastructures::train_stations_from(StationID /*stationid*/, TrainID /*trainid*/)
