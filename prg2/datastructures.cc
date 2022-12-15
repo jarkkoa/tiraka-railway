@@ -711,6 +711,13 @@ void Datastructures::getChildren(RegionID parent, std::vector<RegionID> &childre
     }
 }
 
+
+/**
+ * @brief Datastructures::add_train Creates a new train
+ * @param trainid ID of the new train
+ * @param stationtimes The stations and departure times of the train
+ * @return
+ */
 bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID, Time> > stationtimes)
 {
     if (trains_.find(trainid) != trains_.end())
@@ -722,10 +729,10 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
     newTrain.route = stationtimes;
     auto stationIt = stations_.begin();
     std::map<Time, std::set<TrainID>>* departures;
-    Time* currentDepartureTime;
+    const Time* currentDepartureTime;
 
     // Add departure to all stations on the route
-    for (auto &station : newTrain.route)
+    for (const auto &station : newTrain.route)
     {
         stationIt = stations_.find(station.first);
         if (stationIt == stations_.end())
