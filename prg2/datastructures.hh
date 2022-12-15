@@ -227,8 +227,8 @@ public:
     // Short rationale for estimate:
     std::vector<StationID> train_stations_from(StationID stationid, TrainID trainid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Complexity of std::unordered_map::clear()
     void clear_trains();
 
     // Estimate of performance:
@@ -272,6 +272,11 @@ private:
         std::map<Time, std::set<TrainID>> departures;
     };
 
+    struct Train
+    {
+        std::vector<StationID> route;
+    };
+
     double euclideanDistance(Coord xy);
     double euclideanDistance2(Coord xy1, Coord xy2);
 
@@ -282,6 +287,7 @@ private:
 
     std::unordered_map<StationID, Station> stations_;
     std::unordered_map<RegionID, Region> regions_;
+    std::unordered_map<TrainID, Train> trains_;
 
 };
 

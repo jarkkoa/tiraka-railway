@@ -732,10 +732,12 @@ std::vector<StationID> Datastructures::train_stations_from(StationID /*stationid
     throw NotImplemented("train_stations_from()");
 }
 
+/**
+ * @brief Datastructures::clear_trains Removes train data from the program
+ */
 void Datastructures::clear_trains()
 {
-    // Replace the line below with your implementation
-    throw NotImplemented("clear_trains()");
+    trains_.clear();
 }
 
 std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID /*fromid*/, StationID /*toid*/)
