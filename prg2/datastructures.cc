@@ -711,11 +711,42 @@ void Datastructures::getChildren(RegionID parent, std::vector<RegionID> &childre
     }
 }
 
-bool Datastructures::add_train(TrainID /*trainid*/, std::vector<std::pair<StationID, Time> > /*stationtimes*/)
+bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID, Time> > stationtimes)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("add_train()");
+    if (trains_.find(trainid) != trains_.end())
+    {
+        return false;
+    }
+
+    Train newTrain;
+    newTrain.route = stationtimes;
+    auto stationIt = stations_.begin();
+    std::map<Time, std::set<TrainID>>* departures;
+    Time* currentDepartureTime;
+
+    // Add departure to all stations on the route
+    for (auto &station : newTrain.route)
+    {
+        stationIt = stations_.find(station.first);
+        if (stationIt == stations_.end())
+        {
+            return false;
+        }
+
+        currentDepartureTime = &station.second;
+        departures = &stationIt->second.departures;
+
+        if (departures->find(*currentDepartureTime) == departures->end())
+        {
+            std::set<TrainID> newDepartures;
+            departures->insert(std::make_pair(*currentDepartureTime, newDepartures));
+        }
+
+        departures->at(*currentDepartureTime).insert(trainid);
+
+    }
+
+    return true;
 }
 
 std::vector<StationID> Datastructures::next_stations_from(StationID /*id*/)

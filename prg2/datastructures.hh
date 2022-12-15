@@ -274,7 +274,7 @@ private:
 
     struct Train
     {
-        std::vector<StationID> route;
+        std::vector<std::pair<StationID, Time>> route;
     };
 
     double euclideanDistance(Coord xy);
