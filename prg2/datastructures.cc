@@ -806,11 +806,38 @@ std::vector<StationID> Datastructures::next_stations_from(StationID id)
     return result;
 }
 
-std::vector<StationID> Datastructures::train_stations_from(StationID /*stationid*/, TrainID /*trainid*/)
+
+/**
+ * @brief Datastructures::train_stations_from Gets every stop for a train after and including a given station
+ * @param stationid Station ID
+ * @param trainid Train ID
+ * @return
+ */
+std::vector<StationID> Datastructures::train_stations_from(StationID stationid, TrainID trainid)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("train_stations_from()");
+    std::vector<StationID> stops;
+    const Train* train;
+
+    auto trainIt = trains_.find(trainid);
+    auto stationIt = stations_.find(stationid);
+
+    if (trainIt == trains_.end() || stationIt == stations_.end())
+    {
+        stops.push_back(NO_STATION);
+        return stops;
+    }
+
+    train = &trainIt->second;
+    auto stopIt = train->route.find(stationid);
+
+    if (stopIt == train->route.end())
+    {
+        stops.push_back(NO_STATION);
+        return stops;
+    }
+
+    stops.assign(stopIt, train->route.end());
+    return stops;
 }
 
 /**
