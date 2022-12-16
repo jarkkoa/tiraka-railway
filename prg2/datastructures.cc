@@ -761,13 +761,49 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
     return true;
 }
 
-std::vector<StationID> Datastructures::next_stations_from(StationID /*id*/)
+/**
+ * @brief Datastructures::next_stations_from Get all next stops from the given station
+ * @param id Station ID
+ * @return A vector holding all next stops (not sorted in any way)
+ */
+std::vector<StationID> Datastructures::next_stations_from(StationID id)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("next_stations_from()");
+    // Compile a vector of next stations of every train in departures
 
-    // Compile a vector of previous and next stations of every train in departures
+    // Automatically get rid of duplicates with set, then convert to vector
+    std::unordered_set<StationID> nextStations;
+    std::vector<StationID> result;
+
+    auto stationIt = stations_.find(id);
+    if (stationIt == stations_.end())
+    {
+        nextStations.insert(NO_STATION);
+        result.assign(nextStations.begin(), nextStations.end());
+        return result;
+    }
+
+    const Train* currentTrain;
+    for (const auto &departure : stationIt->second.departures)
+    {
+        for (const auto &train : departure.second)
+        {
+            // Probably safe to assume the train exist (train is added to the station when created)
+            currentTrain = &trains_.at(train);
+
+            // Also assuming that the current station is found in its trains (shouldn't exist otherwise)
+            auto nextStation = std::next(currentTrain->route.find(id));
+
+            if (nextStation != currentTrain->route.end())
+            {
+                nextStations.insert(nextStation->first);
+            }
+
+        }
+    }
+
+    result.reserve(nextStations.size());
+    result.assign(nextStations.begin(), nextStations.end());
+    return result;
 }
 
 std::vector<StationID> Datastructures::train_stations_from(StationID /*stationid*/, TrainID /*trainid*/)
