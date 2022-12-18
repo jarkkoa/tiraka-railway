@@ -836,7 +836,11 @@ std::vector<StationID> Datastructures::train_stations_from(StationID stationid, 
         return stops;
     }
 
-    stops.assign(stopIt, train->route.end());
+    for (; stopIt != train->route.end(); stopIt++)
+    {
+        stops.push_back(stopIt->first);
+    }
+
     return stops;
 }
 
@@ -866,7 +870,7 @@ std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID 
 
     std::unordered_map<StationID, bool> stationGraph; // Station, is visited?
 
-    for (auto station : stations_)
+    for (const auto &station : stations_)
     {
         stationGraph.insert(std::make_pair(station.first, false));
     }
