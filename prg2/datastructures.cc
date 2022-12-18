@@ -727,9 +727,10 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
 
     Train newTrain;
 
-    for (const auto &departure : stationtimes)
+    // insert in the end, not the beginning
+    for (auto it = stationtimes.rbegin(); it != stationtimes.rend(); it++)
     {
-        newTrain.route.insert(departure);
+        newTrain.route.insert(*it);
     }
 
     auto stationIt = stations_.begin();
@@ -758,6 +759,7 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
 
     }
 
+    trains_.insert(std::make_pair(trainid, newTrain));
     return true;
 }
 
@@ -787,10 +789,15 @@ std::vector<StationID> Datastructures::next_stations_from(StationID id)
     {
         for (const auto &train : departure.second)
         {
-            // Probably safe to assume the train exist (train is added to the station when created)
-            currentTrain = &trains_.at(train);
+            auto trainIt = trains_.find(train);
+            if (trainIt == trains_.end())
+            {
+                return result;
+            }
 
-            // Also assuming that the current station is found in its trains (shouldn't exist otherwise)
+            currentTrain = &trainIt->second;
+
+            // Assuming that the current station is found in its trains (shouldn't exist otherwise)
             auto nextStation = std::next(currentTrain->route.find(id));
 
             if (nextStation != currentTrain->route.end())
@@ -808,7 +815,7 @@ std::vector<StationID> Datastructures::next_stations_from(StationID id)
 
 
 /**
- * @brief Datastructures::train_stations_from Gets every stop for a train after and including a given station
+ * @brief Datastructures::train_stations_from Gets every stop for a train after a given station
  * @param stationid Station ID
  * @param trainid Train ID
  * @return
@@ -836,6 +843,7 @@ std::vector<StationID> Datastructures::train_stations_from(StationID stationid, 
         return stops;
     }
 
+    stopIt++;
     for (; stopIt != train->route.end(); stopIt++)
     {
         stops.push_back(stopIt->first);
@@ -890,7 +898,7 @@ std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID 
         {
             to = &stations_.find(*it)->second;
             from = &stations_.find(*(it - 1))->second;
-            distance = euclideanDistance2(from->location, to->location);
+            distance += euclideanDistance2(from->location, to->location);
         }
 
         route.push_back(std::make_pair(*it, distance));
