@@ -215,24 +215,24 @@ public:
     // New assignment 2 operations
     //
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Linear in count of stops on the route
     bool add_train(TrainID trainid, std::vector<std::pair<StationID, Time>> stationtimes);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Linear in count of neighboring stations
     std::vector<StationID> next_stations_from(StationID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Linear in count of stops after the given stop
     std::vector<StationID> train_stations_from(StationID stationid, TrainID trainid);
 
     // Estimate of performance: O(n)
     // Short rationale for estimate: Complexity of std::unordered_map::clear()
     void clear_trains();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(n)
+    // Short rationale for estimate: Complexity of a depth-first search
     std::vector<std::pair<StationID, Distance>> route_any(StationID fromid, StationID toid);
 
     // Non-compulsory operations

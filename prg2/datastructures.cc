@@ -716,7 +716,7 @@ void Datastructures::getChildren(RegionID parent, std::vector<RegionID> &childre
  * @brief Datastructures::add_train Creates a new train
  * @param trainid ID of the new train
  * @param stationtimes The stations and departure times of the train
- * @return
+ * @return Was the train creation successful?
  */
 bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID, Time> > stationtimes)
 {
@@ -819,7 +819,7 @@ std::vector<StationID> Datastructures::next_stations_from(StationID id)
  * @brief Datastructures::train_stations_from Gets every stop for a train after a given station
  * @param stationid Station ID
  * @param trainid Train ID
- * @return
+ * @return A vector containing the stations
  */
 std::vector<StationID> Datastructures::train_stations_from(StationID stationid, TrainID trainid)
 {
@@ -866,6 +866,12 @@ void Datastructures::clear_trains()
     trains_.clear();
 }
 
+/**
+ * @brief Datastructures::route_any Finds a route between two given stations
+ * @param fromid Departure station
+ * @param toid Destination station
+ * @return A Vector contatining the full route
+ */
 std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID fromid, StationID toid)
 {
     std::vector<std::pair<StationID, Distance>> route;
@@ -941,6 +947,14 @@ std::vector<std::pair<StationID, Time>> Datastructures::route_earliest_arrival(S
     throw NotImplemented("route_earliest_arrival()");
 }
 
+/**
+ * @brief Datastructures::routeDFS Search for a route with Depth First Search
+ * @param graph Map containing every station
+ * @param queue The resulting route, if found
+ * @param source Departure station
+ * @param destination Destination station
+ * @return Was a route found?
+ */
 bool Datastructures::routeDFS(std::unordered_map<StationID, bool> &graph,
                               std::vector<StationID> &queue, StationID source,
                               StationID destination)
