@@ -849,6 +849,11 @@ std::vector<StationID> Datastructures::train_stations_from(StationID stationid, 
         stops.push_back(stopIt->first);
     }
 
+    if (stops.size() == 0)
+    {
+        stops.push_back(NO_STATION);
+    }
+
     return stops;
 }
 
