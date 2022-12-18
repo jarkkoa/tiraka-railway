@@ -728,9 +728,9 @@ bool Datastructures::add_train(TrainID trainid, std::vector<std::pair<StationID,
     Train newTrain;
 
     // insert in the end, not the beginning
-    for (auto it = stationtimes.rbegin(); it != stationtimes.rend(); it++)
+    for (const auto &stop : stationtimes)
     {
-        newTrain.route.insert(*it);
+        newTrain.route.push_back(stop);
     }
 
     auto stationIt = stations_.begin();
@@ -798,11 +798,12 @@ std::vector<StationID> Datastructures::next_stations_from(StationID id)
             currentTrain = &trainIt->second;
 
             // Assuming that the current station is found in its trains (shouldn't exist otherwise)
-            auto nextStation = std::next(currentTrain->route.find(id));
+            auto stationIt = std::find_if(currentTrain->route.begin(), currentTrain->route.end(), [id](auto a){return a.first == id;});
+            stationIt++;
 
-            if (nextStation != currentTrain->route.end())
+            if (stationIt != currentTrain->route.end())
             {
-                nextStations.insert(nextStation->first);
+                nextStations.insert(stationIt->first);
             }
 
         }
@@ -835,7 +836,7 @@ std::vector<StationID> Datastructures::train_stations_from(StationID stationid, 
     }
 
     train = &trainIt->second;
-    auto stopIt = train->route.find(stationid);
+    auto stopIt = std::find_if(train->route.begin(), train->route.end(), [stationid](auto a){return a.first == stationid;});
 
     if (stopIt == train->route.end())
     {
