@@ -848,11 +848,51 @@ void Datastructures::clear_trains()
     trains_.clear();
 }
 
-std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID /*fromid*/, StationID /*toid*/)
+std::vector<std::pair<StationID, Distance>> Datastructures::route_any(StationID fromid, StationID toid)
 {
-    // Replace the line below with your implementation
-    // Also uncomment parameters ( /* param */ -> param )
-    throw NotImplemented("route_any()");
+    std::vector<std::pair<StationID, Distance>> route;
+    std::vector<StationID> queue;
+
+    auto sourceStationIt = stations_.find(fromid);
+    auto destinationStationIt = stations_.find(toid);
+
+    if (sourceStationIt == stations_.end() || destinationStationIt == stations_.end())
+    {
+        route.push_back(std::make_pair(NO_STATION, NO_DISTANCE));
+        return route;
+    }
+
+    // Traverse possible routes with dfs
+
+    std::unordered_map<StationID, bool> stationGraph; // Station, is visited?
+
+    for (auto station : stations_)
+    {
+        stationGraph.insert(std::make_pair(station.first, false));
+    }
+
+    if (!routeDFS(stationGraph, queue, fromid, toid))
+    {
+        return route; // route not found
+    }
+
+    const Station* from;
+    const Station* to;
+    double distance = 0;
+
+    for (auto it = queue.begin(); it < queue.end(); it++)
+    {
+        if (it != queue.begin())
+        {
+            to = &stations_.find(*it)->second;
+            from = &stations_.find(*(it - 1))->second;
+            distance = euclideanDistance2(from->location, to->location);
+        }
+
+        route.push_back(std::make_pair(*it, distance));
+    }
+
+    return route;
 }
 
 std::vector<std::pair<StationID, Distance>> Datastructures::route_least_stations(StationID /*fromid*/, StationID /*toid*/)
@@ -881,5 +921,35 @@ std::vector<std::pair<StationID, Time>> Datastructures::route_earliest_arrival(S
     // Replace the line below with your implementation
     // Also uncomment parameters ( /* param */ -> param )
     throw NotImplemented("route_earliest_arrival()");
+}
+
+bool Datastructures::routeDFS(std::unordered_map<StationID, bool> &graph,
+                              std::vector<StationID> &queue, StationID source,
+                              StationID destination)
+{
+    graph.at(source) = true; // visited
+    queue.push_back(source);
+
+    if (source == destination) // route found
+    {
+        return true;
+    }
+
+    for (StationID stop : next_stations_from(source))
+    {
+        if (graph.at(stop) == false)
+        {
+            if (routeDFS(graph, queue, stop, destination))
+            {
+                return true;
+            }
+            else
+            {
+                queue.pop_back(); // Reached a leaf that isn't the destination
+            }
+        }
+    }
+
+    return false;
 }
 

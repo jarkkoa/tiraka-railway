@@ -253,6 +253,8 @@ public:
     // Short rationale for estimate:
     std::vector<std::pair<StationID, Time>> route_earliest_arrival(StationID fromid, StationID toid, Time starttime);
 
+    bool routeDFS(std::unordered_map<StationID, bool> &graph, std::vector<StationID> &queue, StationID source, StationID destination);
+
 private:
     // Add stuff needed for your class implementation here
 
