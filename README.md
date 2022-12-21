@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This program allows the user to create rectangular regions which are displayed on the map. The user can add railway stations and trains to the map .
+This program allows the user to define regions by the coordinates of their vertices and display them on the map. The user can add railway stations and trains to the map as well.
 
 The goal of this project was to learn to use C++ STL containers and algorithms efficiently and to implement our own algorithms. Many different functionalities were implemented, such as finding routes between stations and creating subregions within regions.
 
